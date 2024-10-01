@@ -26,7 +26,7 @@
                 <div />
               </div>
             </div>
-            <span class="absolute top-20 right-40 bg-text2 text-white text-sm sm:text-base md:text-lg font-semibold px-2 py-1 rounded-tl-lg rounded-br-lg">
+            <span class="absolute lg:top-20 lg:right-40 top-10 right-0 bg-text2 text-white text-sm sm:text-base md:text-lg font-semibold px-2 py-1 rounded-tl-lg rounded-br-lg">
               {{ labelText }}
             </span>
           </div>
