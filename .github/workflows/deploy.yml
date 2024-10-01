@@ -1,38 +1,31 @@
-name: Déployer sur AWS CodeDeploy
+name: Déployer sur GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Branche déclenchant le déploiement
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout du code
         uses: actions/checkout@v3
 
-      - name: Configurer AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Configurer Node.js
+        uses: actions/setup-node@v3
         with:
-          aws-access-key-id: AKIAVDDALAA7EIRLE3XE
-          aws-secret-access-key: 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
-          aws-region: us-east-1  # Remplacez par votre région AWS
+          node-version: '16'  # Spécifiez la version de Node.js
 
       - name: Installer les dépendances
-        run: |
-          # Commandes pour installer les dépendances de votre projet
-          npm install
+        run: npm install
 
       - name: Construire le projet
-        run: |
-          # Commandes pour construire votre projet
-          npm run build
+        run: npm run build
 
-      - name: Déployer avec AWS CodeDeploy
-        run: |
-          aws deploy create-deployment \
-            --application-name Portfolio-cyril \
-            --deployment-group-name CodeDeployPortfolio \
-            --s3-location bucket=cyril-dohin.fr,key=cyril-dohin.fr.zip,bundleType=zip
+      - name: Déployer sur GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
