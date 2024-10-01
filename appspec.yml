@@ -1,10 +1,12 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /src/
+  - source: scripts/
+    destination: /opt/codedeploy/scripts
+  - source: src/
+    destination: /var/www/html/mon-app
 hooks:
   AfterInstall:
-    - location: scripts/restart_server.sh
+    - location: /opt/codedeploy/scripts/restart_server.sh
       timeout: 300
       runas: root
