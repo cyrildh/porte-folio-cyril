@@ -3,8 +3,6 @@ os: linux
 files:
   - source: scripts/
     destination: /opt/codedeploy/scripts
-  - source: src/
-    destination: /var/www/html/mon-app
 hooks:
   AfterInstall:
     - location: /opt/codedeploy/scripts/restart_server.sh
