@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Naviguer vers le répertoire de l'application
-cd /src/
+cd ../
 
 # Installer les dépendances (si nécessaire)
 npm install
