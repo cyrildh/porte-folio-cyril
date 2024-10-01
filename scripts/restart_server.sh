@@ -10,7 +10,7 @@ npm install
 npm run build
 
 # Redémarrer l'application avec PM2
-pm2 restart mon-app
+pm2 restart mon-app || pm2 start /var/www/html/mon-app/server.js --name mon-app
 
 # Vérifier le statut de PM2
 pm2 status
