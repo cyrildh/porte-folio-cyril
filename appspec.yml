@@ -4,6 +4,10 @@ files:
   - source: /
     destination: /var/www/html/mon-app
 hooks:
+  BeforeInstall:
+    - location: /var/www/html/mon-app/scripts/cleanup.sh
+      timeout: 300
+      runas: root
   AfterInstall:
     - location: /var/www/html/mon-app/scripts/restart_server.sh
       timeout: 300
