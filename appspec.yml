@@ -2,15 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /var/www/html/mon-app
-  - source: /var/www/html/mon-app/scripts/
-    destination: /opt/codedeploy/scripts
+    destination: /scripts
 hooks:
-  BeforeInstall:
-    - location: /opt/codedeploy/scripts/cleanup.sh
-      timeout: 300
-      runas: root
   AfterInstall:
-    - location: /opt/codedeploy/scripts/restart_server.sh
+    - location: restart_server.sh
       timeout: 300
       runas: root
