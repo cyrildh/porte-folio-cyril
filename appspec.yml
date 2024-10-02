@@ -3,7 +3,7 @@ os: linux
 files:
   - source: /
     destination: /var/www/html/mon-app
-  - source: scripts/
+  - source: /var/www/html/mon-app/scripts/
     destination: /opt/codedeploy/scripts
 hooks:
   BeforeInstall:
