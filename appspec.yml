@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /
+    destination: /var/www/html/mon-app
 hooks:
   AfterInstall:
-    - location: scripts/restart_server.sh
+    - location: /var/www/html/mon-app/scripts/restart_server.sh
       timeout: 300
       runas: root
