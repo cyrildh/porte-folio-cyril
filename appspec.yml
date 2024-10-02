@@ -3,8 +3,10 @@ os: linux
 files:
   - source: /
     destination: /var/www/html/mon-app
+  - source: scripts/
+    destination: /opt/codedeploy/scripts
 hooks:
   AfterInstall:
-    - location: /var/www/html/mon-app/scripts/restart_server.sh
+    - location: /opt/codedeploy/scripts/restart_server.sh
       timeout: 300
       runas: root
