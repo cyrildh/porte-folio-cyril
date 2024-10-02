@@ -1,16 +1,20 @@
 #!/bin/bash
 
+echo "Début du script de redémarrage."
+
 # Naviguer vers le répertoire de l'application
-cd /var/www/html/mon-app
+cd /var/www/html/mon-app || { echo "Erreur: Impossible de naviguer vers /var/www/html/mon-app"; exit 1; }
 
 # Installer les dépendances
-npm install
+echo "Installation des dépendances avec npm..."
+npm install || { echo "Erreur: npm install a échoué"; exit 1; }
 
 # Construire l'application
-npm run build
+echo "Construction de l'application avec npm run build..."
+npm run build || { echo "Erreur: npm run build a échoué"; exit 1; }
 
 # Redémarrer l'application avec PM2
-pm2 restart mon-app || pm2 start /var/www/html/mon-app/server.js --name mon-app
+echo "Redémarrage de l'application avec PM2..."
+pm2 restart mon-app || { echo "Erreur: pm2 restart a échoué"; exit 1; }
 
-# Vérifier le statut de PM2
-pm2 status
+echo "Fin du script de redémarrage."
