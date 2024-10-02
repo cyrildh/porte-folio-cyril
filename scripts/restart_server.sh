@@ -15,6 +15,6 @@ npm run build || { echo "Erreur: npm run build a échoué"; exit 1; }
 
 # Redémarrer l'application avec PM2
 echo "Redémarrage de l'application avec PM2..."
-pm2 restart /var/www/html/mon-app/src/server.js || { echo "Erreur: pm2 restart a échoué"; exit 1; }
+pm2 restart /src/server.js || { echo "Erreur: pm2 restart a échoué"; exit 1; }
 
 echo "Fin du script de redémarrage."
