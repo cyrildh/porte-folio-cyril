@@ -9,7 +9,7 @@
         Si vous avez des questions, des propositions ou souhaitez discuter, n'hésitez pas à me contacter.
       </p>
     </div>
-  
+      
     <!-- Formulaire de contact -->
     <div class="lg:w-full mx-auto mt-16 max-w-lg sm:mt-20 lg:mt-24 bg-white shadow-lg rounded-lg overflow-hidden p-8 text-left items-center justify-center">
       <form
@@ -30,7 +30,7 @@
             class="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
         </div>
-  
+      
         <div>
           <label
             for="email"
@@ -45,7 +45,7 @@
             class="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
         </div>
-  
+      
         <div>
           <label
             for="message"
@@ -60,7 +60,7 @@
             class="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
-  
+      
         <div class="flex justify-center">
           <button
             type="submit"
@@ -73,47 +73,42 @@
     </div>
   </div>
 </template>
+    
+  <script setup>
+  import { ref } from 'vue';
   
-<script setup>
-import { ref } from 'vue';
-
-const form = ref({
-name: '',
-email: '',
-message: ''
-});
-
-const submitForm = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/send-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(form.value),
-    });
-
-    if (response.ok) {
+  const form = ref({
+    name: '',
+    email: '',
+    message: '',
+  });
+  
+  const submitForm = async () => {
+    try {
+      const response = await fetch('http://localhost:3002/send-email', { // Assurez-vous que le port est correct
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form.value),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+      }
+  
       alert('Email envoyé avec succès');
-      form.value.name = '';
-      form.value.email = '';
-      form.value.message = '';
-    } else {
-      alert('Erreur lors de l\'envoi de l\'email');
+      // Réinitialiser les champs du formulaire
+      form.value = {
+        name: '',
+        email: '',
+        message: '',
+      };
+    } catch (error) {
+      console.error('Erreur lors de la soumission du formulaire:', error);
+      alert(`Erreur lors de la soumission du formulaire: ${error.message}`);
     }
-  } catch (error) {
-    console.error('Erreur lors de la soumission du formulaire:', error);
-    alert('Erreur lors de la soumission du formulaire');
-  }
-};
-
-</script>
-
-<style scoped>
-.text-text {
-color: #333;
-}
-.bg-white {
-background-color: #fff;
-}
-</style>
+  };
+  </script>
+  
