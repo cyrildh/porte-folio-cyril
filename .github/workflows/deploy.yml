@@ -41,4 +41,4 @@ jobs:
         run: |
           aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
         env:
-          AWS_REGION: 'us-east-1'
+          AWS_REGION: 'eu-west-3'
