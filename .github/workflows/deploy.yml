@@ -10,35 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Étape 1 : Checkout du code
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Étape 2 : Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16' # Utilisez la version Node.js compatible avec votre projet
 
+      # Étape 3 : Installer les dépendances
       - name: Install Dependencies
         run: npm install
 
+      # Étape 4 : Build du projet
       - name: Build Project
         run: npm run build
 
-      - name: Deploy to S3
-        uses: aws-actions/configure-aws-credentials@v1
+      # Étape 5 : Configurer les credentials AWS
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: AKIAVDDALAA7EIRLE3XE
           aws-secret-access-key: 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
           aws-region: 'eu-west-3' # Remplacez par votre région AWS
 
-      - name: Sync S3 Bucket
-        run: |
-          aws s3 sync dist/ s3://cyril-dohin.fr/ --delete
+      # Étape 6 : Déployer sur S3
+      - name: Deploy to S3
+        run: aws s3 sync dist/ s3://cyril-dohin.fr/ --delete
         env:
           AWS_REGION: 'eu-west-3'
 
+      # Étape 7 : Invalider le cache CloudFront
       - name: Invalidate CloudFront Cache
-        run: |
-          aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
         env:
-          AWS_REGION: 'eu-west-3'
+          AWS_REGION: 'eu-west-3' # Remplacez par votre région AWS

@@ -1,7 +1,6 @@
+// vue.config.js
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/' // Remplacez par le nom de votre dépôt
-    : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
   outputDir: 'dist',
   assetsDir: 'assets',
   // Autres configurations si nécessaire
