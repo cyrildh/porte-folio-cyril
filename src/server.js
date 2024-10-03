@@ -36,6 +36,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
 }));
 
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Serveur démarré sur le port ${port}`);
+});
+
 // Route pour envoyer un email
 app.post('/send-email', async (req, res) => {
   const { name, email, message } = req.body;

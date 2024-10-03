@@ -83,32 +83,33 @@
     message: '',
   });
   
-  const submitForm = async () => {
-    try {
-      const response = await fetch('https://cyril-dohin.fr/send-email', { // Utiliser l'URL de production
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(form.value),
-      });
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-      }
-  
-      alert('Email envoyé avec succès');
-      // Réinitialiser les champs du formulaire
-      form.value = {
-        name: '',
-        email: '',
-        message: '',
-      };
-    } catch (error) {
-      console.error('Erreur lors de la soumission du formulaire:', error);
-      alert(`Erreur lors de la soumission du formulaire: ${error.message}`);
+const submitForm = async () => {
+  try {
+    const response = await fetch('/send-email', { // URL relative
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form.value),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erreur HTTP! statut: ${response.status} - ${errorText}`);
     }
-  };
+
+    alert('Email envoyé avec succès');
+    // Réinitialiser les champs du formulaire
+    form.value = {
+      name: '',
+      email: '',
+      message: '',
+    };
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error);
+    alert(`Erreur lors de la soumission du formulaire: ${error.message}`);
+  }
+};
+
   </script>
   
