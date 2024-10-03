@@ -1,32 +1,22 @@
 // server.js
 
-const AWS = require('aws-sdk');
+const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 
-// Configurer AWS SDK
-AWS.config.update({ region: 'eu-west-3' }); // Remplacez par votre région AWS, par exemple 'us-east-1'
-
-const secretsManager = new AWS.SecretsManager();
-
 const app = express();
 const port = process.env.PORT || 3002;
 
-
-// Middleware
-app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:8081', // Remplacez par l'URL de votre frontend
-  methods: ['POST', 'GET', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
-}));
+// Configurer le client Secrets Manager
+const client = new SecretsManagerClient({ region: 'eu-west-3' }); // Votre région AWS
 
 // Fonction pour récupérer les secrets
 const getSecrets = async () => {
   try {
-    const data = await secretsManager.getSecretValue({ SecretId: 'my-app-secrets' }).promise();
-    if ('SecretString' in data) {
+    const command = new GetSecretValueCommand({ SecretId: 'my-app-secrets' }); // Nom correct du secret
+    const data = await client.send(command);
+    if (data.SecretString) {
       return JSON.parse(data.SecretString);
     } else {
       const buff = Buffer.from(data.SecretBinary, 'base64');
@@ -37,6 +27,14 @@ const getSecrets = async () => {
     throw err;
   }
 };
+
+// Middleware
+app.use(express.json());
+app.use(cors({
+  origin: 'https://cyril-dohin.fr', // URL de production
+  methods: ['POST', 'GET', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
 
 // Route pour envoyer un email
 app.post('/send-email', async (req, res) => {
