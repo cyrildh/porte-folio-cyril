@@ -3,7 +3,7 @@ name: Deploy to AWS S3 and CloudFront
 on:
   push:
     branches:
-      - main # Remplacez par votre branche principale si différent
+      - master # Remplacez par votre branche principale si différent
 
 jobs:
   build-and-deploy:
