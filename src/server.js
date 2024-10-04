@@ -2,8 +2,6 @@ const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
-const { google } = require('googleapis');
 
 const app = express();
 const port = 3002;
@@ -11,26 +9,19 @@ const port = 3002;
 // Configurer le client Secrets Manager
 const client = new SecretsManagerClient({ region: 'eu-west-3' }); // Votre région AWS
 
-// Variable pour stocker les secrets en cache
-let cachedSecrets = null;
-
 // Fonction pour récupérer les secrets
 const getSecrets = async () => {
-  if (cachedSecrets) {
-    return cachedSecrets;
-  }
   try {
     const command = new GetSecretValueCommand({ SecretId: 'my-app-secrets' }); // Nom correct du secret
     const data = await client.send(command);
     if (data.SecretString) {
-      cachedSecrets = JSON.parse(data.SecretString);
+      return JSON.parse(data.SecretString);
     } else if (data.SecretBinary) {
       const buff = Buffer.from(data.SecretBinary, 'base64');
-      cachedSecrets = JSON.parse(buff.toString('ascii'));
+      return JSON.parse(buff.toString('ascii'));
     } else {
       throw new Error('Aucun secret disponible dans la réponse');
     }
-    return cachedSecrets;
   } catch (err) {
     console.error('Erreur lors de la récupération des secrets:', err.message);
     throw new Error('Impossible de récupérer les secrets, vérifiez la configuration de Secrets Manager.');
@@ -40,20 +31,13 @@ const getSecrets = async () => {
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: ['https://cyril-dohin.fr', 'https://subdomain.cyril-dohin.fr'], // Restreindre l'origine aux domaines spécifiques
+  origin: 'https://cyril-dohin.fr', // URL de production
   methods: ['POST', 'GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
 }));
 
-// Limiteur de taux pour éviter les abus
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limite chaque IP à 100 requêtes par fenêtre de 15 minutes
-  message: 'Trop de requêtes depuis cette IP, veuillez réessayer plus tard.'
-});
-
-// Appliquer le limiteur de taux à la route /send-email
-app.post('/send-email', limiter, async (req, res) => {
+// Route pour envoyer un email
+app.post('/send-email', async (req, res) => {
   const { name, email, message } = req.body;
 
   // Vérifier que tous les champs sont présents
@@ -69,23 +53,12 @@ app.post('/send-email', limiter, async (req, res) => {
   }
 
   try {
-    // Configurer OAuth2 pour Nodemailer
-    const oAuth2Client = new google.auth.OAuth2(
-      secrets.CLIENT_ID,
-      secrets.CLIENT_SECRET,
-      'https://developers.google.com/oauthplayground'
-    );
-    oAuth2Client.setCredentials({ refresh_token: secrets.REFRESH_TOKEN });
-    const accessToken = await oAuth2Client.getAccessToken();
-
-    // Configurer le transporteur Nodemailer avec OAuth2
+    // Configurer le transporteur Nodemailer avec Gmail
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        type: 'OAuth2',
         user: secrets.EMAIL_USER, // Utiliser les secrets récupérés
         pass: secrets.EMAIL_PASS, // Utiliser les secrets récupérés
-        accessToken: accessToken.token,
       },
     });
 
@@ -111,11 +84,6 @@ app.post('/send-email', limiter, async (req, res) => {
 app.use((err, req, res) => {
   console.error('Erreur serveur:', err.message);
   res.status(500).json({ error: 'Une erreur interne est survenue. Veuillez réessayer plus tard.' });
-});
-
-// Endpoint de vérification de l'état du serveur
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Le serveur fonctionne correctement' });
 });
 
 app.listen(port, () => {
