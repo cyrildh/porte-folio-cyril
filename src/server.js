@@ -41,16 +41,22 @@ app.use(cors({
 }));
 
 app.post('/send-email', async (req, res) => {
+  console.log('Requête POST reçue sur /send-email');
+
   const { name, email, message } = req.body;
+  console.log('Données du corps de la requête:', req.body);
 
   // Vérifier que tous les champs sont présents
   if (!name || !email || !message) {
+    console.error('Tous les champs ne sont pas présents.');
     return res.status(400).json({ error: 'Tous les champs sont requis' });
   }
 
   let secrets;
   try {
+    console.log('Récupération des secrets en cours...');
     secrets = await getSecrets();
+    console.log('Secrets récupérés avec succès.');
   } catch (err) {
     console.error('Erreur lors de la récupération des secrets:', err.message);
     return res.status(500).json({ error: 'Erreur lors de la récupération des secrets. Veuillez réessayer plus tard.' });
@@ -58,6 +64,7 @@ app.post('/send-email', async (req, res) => {
 
   try {
     // Configurer le transporteur Nodemailer avec Gmail
+    console.log('Configuration du transporteur Nodemailer...');
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -77,14 +84,13 @@ app.post('/send-email', async (req, res) => {
 
     console.log('Envoi de l\'email en cours...');
     await transporter.sendMail(mailOptions);
-    console.log('Email envoyé avec succès');
+    console.log('Email envoyé avec succès.');
     res.status(200).json({ message: 'Email envoyé avec succès' });
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'email:', error.message);
     res.status(500).json({ error: 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer plus tard.' });
   }
 });
-
 
 
 app.get('/test-secrets', async (req, res) => {
