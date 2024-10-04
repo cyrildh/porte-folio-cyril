@@ -35,7 +35,7 @@ const getSecrets = async () => {
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: 'https://cyril-dohin.fr', // URL de production
+  origin: '*', // Autoriser temporairement toutes les origines pour le test
   methods: ['POST', 'GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
 }));
@@ -84,11 +84,17 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
+
 // Gestion des erreurs globales
 app.use((err, req, res) => {
-  console.error('Erreur serveur:', err.message);
-  res.status(500).json({ error: 'Une erreur interne est survenue. Veuillez réessayer plus tard.' });
+  console.error('Erreur serveur:', err.stack);
+  if (res && typeof res.status === 'function') {
+    res.status(500).json({ error: 'Une erreur interne est survenue. Veuillez réessayer plus tard.', details: err.message });
+  } else {
+    console.error("Impossible d'envoyer une réponse HTTP: res est incorrect.");
+  }
 });
+
 
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
