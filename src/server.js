@@ -40,7 +40,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
 }));
 
-// Route pour envoyer un email
 app.post('/send-email', async (req, res) => {
   const { name, email, message } = req.body;
 
@@ -53,6 +52,7 @@ app.post('/send-email', async (req, res) => {
   try {
     secrets = await getSecrets();
   } catch (err) {
+    console.error('Erreur lors de la récupération des secrets:', err.message);
     return res.status(500).json({ error: 'Erreur lors de la récupération des secrets. Veuillez réessayer plus tard.' });
   }
 
@@ -61,28 +61,30 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: secrets.EMAIL_USER, // Utiliser les secrets récupérés
-        pass: secrets.EMAIL_PASS, // Utiliser les secrets récupérés
+        user: secrets.EMAIL_USER,
+        pass: secrets.EMAIL_PASS,
       },
     });
 
     // Configurer le contenu de l'email
     const mailOptions = {
-      from: secrets.EMAIL_USER, // Adresse authentifiée
-      to: secrets.EMAIL_USER,   // Vous-même
+      from: secrets.EMAIL_USER,
+      to: secrets.EMAIL_USER,
       subject: `Site portfolio ! Message de ${name}`,
       text: `Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-      replyTo: email, // Permet de répondre directement à l'utilisateur
+      replyTo: email,
     };
 
-    // Envoyer l'email
+    console.log('Envoi de l\'email en cours...');
     await transporter.sendMail(mailOptions);
+    console.log('Email envoyé avec succès');
     res.status(200).json({ message: 'Email envoyé avec succès' });
   } catch (error) {
-    console.error('Erreur lors de lenvoi de lemail:', error.message);
-    res.status(500).json({ error: 'Erreur lors de lenvoi de lemail. Veuillez réessayer plus tard.' });
+    console.error('Erreur lors de l\'envoi de l\'email:', error.message);
+    res.status(500).json({ error: 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer plus tard.' });
   }
 });
+
 
 
 app.get('/test-secrets', async (req, res) => {
