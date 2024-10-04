@@ -85,6 +85,17 @@ app.post('/send-email', async (req, res) => {
 });
 
 
+app.get('/test-secrets', async (req, res) => {
+  try {
+    const secrets = await getSecrets();
+    res.status(200).json({ secrets });
+  } catch (err) {
+    console.error('Erreur lors de la récupération des secrets:', err.message);
+    res.status(500).json({ error: 'Erreur lors de la récupération des secrets.' });
+  }
+});
+
+
 // Gestion des erreurs globales
 app.use((err, req, res) => {
   console.error('Erreur serveur:', err.stack);
