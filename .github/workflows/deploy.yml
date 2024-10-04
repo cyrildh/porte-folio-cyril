@@ -24,10 +24,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # Étape 4 : Build du projet
-      - name: Build Project
-        run: npm run build
-
       # Étape 5 : Configurer les credentials AWS
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -47,3 +43,7 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
         env:
           AWS_REGION: 'eu-west-3' # Remplacez par votre région AWS
+          
+      # Étape 4 : Build du projet
+      - name: Build Project
+        run: npm run build
