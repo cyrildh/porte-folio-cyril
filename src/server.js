@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = 3002;
 
 // Configurer le client Secrets Manager
 const client = new SecretsManagerClient({ region: 'eu-west-3' }); // Votre région AWS
@@ -36,12 +36,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
 }));
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Serveur démarré sur le port ${port}`);
-});
-
 // Route pour envoyer un email
-app.post('/send-email', async (req, res) => {
+app.post('https://cyril-dohin.fr/send-email', async (req, res) => {
   const { name, email, message } = req.body;
 
   // Vérifier que tous les champs sont présents
