@@ -20,30 +20,39 @@ jobs:
         with:
           node-version: '16' # Utilisez la version Node.js compatible avec votre projet
 
-      # Étape 3 : Installer les dépendances
+      # Étape 3 : Cache des dépendances Node.js (Optionnel)
+      - name: Cache Node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Étape 4 : Installer les dépendances
       - name: Install Dependencies
         run: npm install
 
-      # Étape 5 : Configurer les credentials AWS
+      # Étape 5 : Build du projet
+      - name: Build Project
+        run: npm run build
+
+      # Étape 6 : Configurer les credentials AWS
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: AKIAVDDALAA7EIRLE3XE
-          aws-secret-access-key: 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
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'eu-west-3' # Remplacez par votre région AWS
 
-      # Étape 6 : Déployer sur S3
+      # Étape 7 : Déployer sur S3
       - name: Deploy to S3
         run: aws s3 sync dist/ s3://cyril-dohin.fr/ --delete
         env:
           AWS_REGION: 'eu-west-3'
 
-      # Étape 7 : Invalider le cache CloudFront
+      # Étape 8 : Invalider le cache CloudFront
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
         env:
           AWS_REGION: 'eu-west-3' # Remplacez par votre région AWS
-          
-      # Étape 4 : Build du projet
-      - name: Build Project
-        run: npm run build
