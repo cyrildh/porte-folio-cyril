@@ -28,25 +28,22 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      # Étape 5 : Déployer sur S3
+      # Étape 5 : Configurer les credentials AWS
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: AKIAVDDALAA7EIRLE3XE
+          aws-secret-access-key: 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
+          aws-region: 'eu-west-3' # Remplacez par votre région AWS
+
+      # Étape 6 : Déployer sur S3
       - name: Deploy to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
-        with:
-          args: --delete
+        run: aws s3 sync dist/ s3://cyril-dohin.fr/ --delete
         env:
-          AWS_S3_BUCKET: cyril-dohin.fr
-          aws-access-key-id: AKIAVDDALAA7EIRLE3XE
-          aws-secret-access-key: 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
-          AWS_REGION: 'us-east-1' # Remplacez par votre région AWS
-          SOURCE_DIR: 'dist'
+          AWS_REGION: 'eu-west-3'
 
-      # Étape 6 : Invalider le cache CloudFront
-      - name: Invalidate CloudFront
-        uses: chetan/invalidate-cloudfront-action@v1
-        with:
-          distribution: E30TZHHHE5ETBR # Remplacez par votre ID de distribution
-          paths: "/*"
+      # Étape 7 : Invalider le cache CloudFront
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
         env:
-          aws-access-key-id: AKIAVDDALAA7EIRLE3XE
-          aws-secret-access-key: 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
-
+          AWS_REGION: 'eu-west-3' # Remplacez par votre région AWS
