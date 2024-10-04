@@ -86,7 +86,7 @@
   const submitForm = async () => {
     try {
       const response = await fetch('https://cyril-dohin.fr/send-email', { // Utiliser l'URL de production
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
