@@ -9,11 +9,13 @@ const port = 3002;
 // Configurer le client Secrets Manager
 const client = new SecretsManagerClient({ region: 'eu-west-3' }); // Votre région AWS
 
-// Fonction pour récupérer les secrets
 const getSecrets = async () => {
   try {
+    console.log("Trying to get secrets...");
     const command = new GetSecretValueCommand({ SecretId: 'my-app-secrets' }); // Nom correct du secret
     const data = await client.send(command);
+    console.log("Secrets received from AWS Secrets Manager:", data);
+    
     if (data.SecretString) {
       return JSON.parse(data.SecretString);
     } else if (data.SecretBinary) {
@@ -23,10 +25,11 @@ const getSecrets = async () => {
       throw new Error('Aucun secret disponible dans la réponse');
     }
   } catch (err) {
-    console.error('Erreur lors de la récupération des secrets:', err.message);
+    console.error('Erreur lors de la récupération des secrets:', err);
     throw new Error('Impossible de récupérer les secrets, vérifiez la configuration de Secrets Manager.');
   }
 };
+
 
 // Middleware
 app.use(express.json());
