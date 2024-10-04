@@ -12,6 +12,7 @@ const client = new SecretsManagerClient({ region: 'eu-west-3' }); // Votre régi
 const getSecrets = async () => {
   try {
     console.log("Trying to get secrets...");
+    console.log("Client:", client);
     const command = new GetSecretValueCommand({ SecretId: 'my-app-secrets' }); // Nom correct du secret
     const data = await client.send(command);
     console.log("Secrets received from AWS Secrets Manager:", data);
