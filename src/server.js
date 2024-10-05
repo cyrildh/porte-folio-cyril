@@ -9,6 +9,7 @@ const port = 3002;
 // Configurer le client Secrets Manager
 const client = new SecretsManagerClient({ region: 'eu-west-3' }); // Votre région AWS
 
+// Fonction pour récupérer les secrets
 const getSecrets = async () => {
   try {
     console.log("Trying to get secrets...");
@@ -31,7 +32,6 @@ const getSecrets = async () => {
   }
 };
 
-
 // Middleware
 app.use(express.json());
 app.use(cors({
@@ -40,6 +40,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
 }));
 
+// Route pour envoyer un email
 app.post('/send-email', async (req, res) => {
   console.log('Requête POST reçue sur /send-email');
 
@@ -82,16 +83,15 @@ app.post('/send-email', async (req, res) => {
       replyTo: email,
     };
 
-    console.log('Envoi de l\'email en cours...');
+    console.log('Envoi de lemail en cours...');
     await transporter.sendMail(mailOptions);
     console.log('Email envoyé avec succès.');
     res.status(200).json({ message: 'Email envoyé avec succès' });
   } catch (error) {
-    console.error('Erreur lors de l\'envoi de l\'email:', error.message);
-    res.status(500).json({ error: 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer plus tard.' });
+    console.error('Erreur lors de lenvoi de lemail:', error.message);
+    res.status(500).json({ error: 'Erreur lors de lenvoi de lemail. Veuillez réessayer plus tard.' });
   }
 });
-
 
 app.get('/test-secrets', async (req, res) => {
   try {
@@ -103,7 +103,6 @@ app.get('/test-secrets', async (req, res) => {
   }
 });
 
-
 // Gestion des erreurs globales
 app.use((err, req, res) => {
   console.error('Erreur serveur:', err.stack);
@@ -113,7 +112,6 @@ app.use((err, req, res) => {
     console.error("Impossible d'envoyer une réponse HTTP: res est incorrect.");
   }
 });
-
 
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
