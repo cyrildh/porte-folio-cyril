@@ -14,4 +14,11 @@ module.exports = {
       }),
     ],
   },
+  devServer: {
+    proxy: {
+      '/send-email': {
+        target: 'https://api.cyril-dohin.fr',
+        changeOrigin: true,
+      },
+    },
 };
