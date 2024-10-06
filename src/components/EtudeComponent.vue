@@ -113,7 +113,7 @@ export default {
     return {
       formations: [
       {
-          year: '2025',
+          year: '2024',
           title: 'Master Développeur',
           description:
             "Cette formation de niveau avancé couvre des sujets tels que le développement avancé, la gestion de projets et la sécurité des données, préparant les étudiants à des rôles de leadership en informatique.",
@@ -125,7 +125,7 @@ export default {
           ],
         },
         {
-          year: '2023',
+          year: '2022',
           title: 'Bachelor Développeur',
           description:
             "Cette formation permet d'approfondir les compétences en informatique, en mettant l'accent sur le développement d'applications, la gestion des données et les interfaces utilisateur.",
