@@ -134,12 +134,17 @@ function setupScene(gltf) {
 
   // Création de la scène
   scene = new THREE.Scene()
-  scene.add(new THREE.AmbientLight(0xffffff, 0.5)) // Lumière ambiante ajustée
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8)) // Augmentation de l'intensité de l'AmbientLight
 
   // Configuration des lumières principales sans ombres
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.5) // Réduction de l'intensité
+  const keyLight = new THREE.DirectionalLight(0xffffff, 2) // Augmentation de l'intensité
   keyLight.position.set(1, 1, 2)
   scene.add(keyLight)
+
+  // Ajout d'une HemisphereLight pour un éclairage global supplémentaire
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6) // Lumière du ciel et de l'ombre
+  hemiLight.position.set(0, 20, 0)
+  scene.add(hemiLight)
 
   // Ajout du modèle à la scène sans modifier les matériaux
   const avatar = gltf.scene
