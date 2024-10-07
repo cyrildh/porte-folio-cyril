@@ -45,6 +45,7 @@
               aria-hidden="true"
             >
               <path
+                v-if="messageType === 'success'"
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="3"
