@@ -24,19 +24,19 @@
       </div>
       <div class="container hidden lg:flex lg:gap-x-12">
         <a
-          href="#header"
+          href="#accueil"
           class="text-sm font-semibold leading-6 text-text"
         >Accueil</a>
         <a
-          href="#competence"
+          href="#competences"
           class="text-sm font-semibold leading-6 text-text"
         >Mes compétences</a>
         <a
-          href="#projet"
+          href="#projets"
           class="text-sm font-semibold leading-6 text-text"
         >Mes projets</a>
         <a
-          href="#etude"
+          href="#formations"
           class="text-sm font-semibold leading-6 text-text"
         >Mes formations</a>
         <a
@@ -53,22 +53,22 @@
     >
       <div class="space-y-2 px-2 pb-3 pt-2">
         <a
-          href="#header"
+          href="#accueil"
           class="block text-base font-semibold leading-6 text-text rounded-md p-2"
           @click="closeMenu"
-        >Moi</a>
+        >Accueil</a>
         <a
-          href="#competence"
+          href="#competences"
           class="block text-base font-semibold leading-6 text-text rounded-md p-2"
           @click="closeMenu"
         >Mes compétences</a>
         <a
-          href="#projet"
+          href="#projets"
           class="block text-base font-semibold leading-6 text-text rounded-md p-2"
           @click="closeMenu"
         >Mes projets</a>
         <a
-          href="#etude"
+          href="#formations"
           class="block text-base font-semibold leading-6 text-text rounded-md p-2"
           @click="closeMenu"
         >Mes formations</a>
@@ -83,25 +83,25 @@
 
   <div>
     <section
-      id="header"
+      id="accueil"
       class="fade-in"
     >
       <MeComponent />
     </section>
     <section
-      id="competence"
+      id="competences"
       class="fade-in"
     >
       <CompetenceComponent />
     </section>
     <section
-      id="projet"
+      id="projets"
       class="fade-in"
     >
       <ProjetComponent />
     </section>
     <section
-      id="etude"
+      id="formations"
       class="fade-in"
     >
       <EtudeComponent />
