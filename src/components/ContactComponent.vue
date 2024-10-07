@@ -53,7 +53,6 @@
                 @click="closeMessage"
               />   
             </svg>
-            &times;
             <span>{{ message }}</span>
           </div>
         </transition>
