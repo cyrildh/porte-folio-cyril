@@ -64,23 +64,27 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+// Données statiques
 const name = 'Développeur'
 const title = 'Full Stack'
 const labelText = 'Cyril Dohin'
 const cvLink = '/cv_cyril_dohin.pdf'
 
+// Icônes sociales
 const socialIcons = [
   { name: 'Facebook', href: 'https://www.facebook.com/cyril.dohin?locale=fr_FR', icon: ['fab', 'facebook'], label: 'Facebook' },
   { name: 'GitHub', href: 'https://github.com/cyrildh', icon: ['fab', 'github'], label: 'GitHub' },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/cyril-dohin/', icon: ['fab', 'linkedin'], label: 'LinkedIn' },
 ]
 
+// Références Three.js
 let renderer, scene, camera, controls, mixer
 let waveAction, stumbleAction
 let animationId
 
 const clock = new THREE.Clock()
 
+// Fonction de chargement du modèle
 async function loadModel() {
   const loader = new GLTFLoader()
   const dracoLoader = new DRACOLoader()
@@ -101,6 +105,7 @@ async function loadModel() {
   )
 }
 
+// Fonction de configuration de la scène
 function setupScene(gltf) {
   const container = document.getElementById('avatar-container')
 
@@ -132,20 +137,12 @@ function setupScene(gltf) {
   scene.add(new THREE.AmbientLight(0xffffff, 0.5)) // Lumière ambiante ajustée
 
   // Configuration des lumières principales sans ombres
-  const keyLight = new THREE.DirectionalLight(0xffffff, 2)
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.5) // Réduction de l'intensité
   keyLight.position.set(1, 1, 2)
   scene.add(keyLight)
 
-  // Ajout du modèle à la scène
+  // Ajout du modèle à la scène sans modifier les matériaux
   const avatar = gltf.scene
-  avatar.traverse((child) => {
-    if (child.isMesh) {
-      // Utilisation de MeshBasicMaterial pour améliorer les performances
-      child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-      child.castShadow = false
-      child.receiveShadow = false
-    }
-  })
   scene.add(avatar)
 
   // Ajout du sol
@@ -186,7 +183,7 @@ function setupScene(gltf) {
     }
   })
 
-  // Fonction d'animation simplifiée
+  // Fonction d'animation optimisée
   function animate() {
     animationId = requestAnimationFrame(animate)
     const delta = clock.getDelta()
@@ -215,8 +212,6 @@ onBeforeUnmount(() => {
   }
 })
 </script>
-
-
 
 <style scoped>
 .loader {
