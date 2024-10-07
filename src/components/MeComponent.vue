@@ -64,32 +64,23 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
-// Données statiques
 const name = 'Développeur'
 const title = 'Full Stack'
 const labelText = 'Cyril Dohin'
 const cvLink = '/cv_cyril_dohin.pdf'
 
-// Icônes sociales
 const socialIcons = [
   { name: 'Facebook', href: 'https://www.facebook.com/cyril.dohin?locale=fr_FR', icon: ['fab', 'facebook'], label: 'Facebook' },
   { name: 'GitHub', href: 'https://github.com/cyrildh', icon: ['fab', 'github'], label: 'GitHub' },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/cyril-dohin/', icon: ['fab', 'linkedin'], label: 'LinkedIn' },
 ]
 
-// Références Three.js
 let renderer, scene, camera, controls, mixer
 let waveAction, stumbleAction
-let leftEye, rightEye
 let animationId
 
-// Gestion des interactions
-const mouse = new THREE.Vector2()
-const raycaster = new THREE.Raycaster()
-let lastLookAtPos = new THREE.Vector3()
-let mouseHasMoved = false
+const clock = new THREE.Clock()
 
-// Fonction de chargement du modèle
 async function loadModel() {
   const loader = new GLTFLoader()
   const dracoLoader = new DRACOLoader()
@@ -110,7 +101,6 @@ async function loadModel() {
   )
 }
 
-// Fonction de configuration de la scène
 function setupScene(gltf) {
   const container = document.getElementById('avatar-container')
 
@@ -118,9 +108,8 @@ function setupScene(gltf) {
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.setSize(container.clientWidth, container.clientHeight)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Limitation du pixel ratio
-  renderer.shadowMap.enabled = true
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)) // Réduction du pixel ratio
+  renderer.shadowMap.enabled = false // Désactivation des ombres
   container.appendChild(renderer.domElement)
 
   // Initialisation de la caméra
@@ -142,32 +131,19 @@ function setupScene(gltf) {
   scene = new THREE.Scene()
   scene.add(new THREE.AmbientLight(0xffffff, 0.5)) // Lumière ambiante ajustée
 
-  // Configuration des lumières principales
-  const spotlight = new THREE.SpotLight(0xffffff, 10, 8, Math.PI / 6, 0.3, 1)
-  spotlight.position.set(0, 4, 2)
-  spotlight.castShadow = true
-  spotlight.shadow.mapSize.width = 1024
-  spotlight.shadow.mapSize.height = 1024
-  spotlight.shadow.camera.near = 1
-  spotlight.shadow.camera.far = 15
-  scene.add(spotlight)
-
+  // Configuration des lumières principales sans ombres
   const keyLight = new THREE.DirectionalLight(0xffffff, 2)
   keyLight.position.set(1, 1, 2)
-  keyLight.castShadow = true
-  keyLight.shadow.mapSize.width = 1024
-  keyLight.shadow.mapSize.height = 1024
   scene.add(keyLight)
 
   // Ajout du modèle à la scène
   const avatar = gltf.scene
   avatar.traverse((child) => {
     if (child.isMesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-      // Identification des yeux si présents
-      if (child.name.toLowerCase().includes('left_eye')) leftEye = child
-      if (child.name.toLowerCase().includes('right_eye')) rightEye = child
+      // Simplification des matériaux si possible
+      child.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
+      child.castShadow = false
+      child.receiveShadow = false
     }
   })
   scene.add(avatar)
@@ -197,8 +173,6 @@ function setupScene(gltf) {
     stumbleAction = mixer.clipAction(stumbleClip)
   }
 
-  const clock = new THREE.Clock()
-
   // Gestion des interactions avec les clics
   container.addEventListener('mousedown', () => {
     if (waveAction && stumbleAction) {
@@ -212,67 +186,26 @@ function setupScene(gltf) {
     }
   })
 
-  // Gestion des mouvements de la souris
-  window.addEventListener('mousemove', onMouseMove)
-
-  // Fonction d'animation optimisée
+  // Fonction d'animation simplifiée
   function animate() {
-    // Profilage : Démarrage du chronomètre
-    const frameStart = performance.now()
-
     animationId = requestAnimationFrame(animate)
     const delta = clock.getDelta()
 
-    // Mise à jour des animations
     mixer.update(delta)
 
-    // Mise à jour des yeux seulement si la souris a bougé
-    if (mouseHasMoved) {
-      raycaster.setFromCamera(mouse, camera)
-      raycaster.ray.at(2, lastLookAtPos)
-
-      if (leftEye && rightEye) {
-        leftEye.lookAt(lastLookAtPos)
-        rightEye.lookAt(lastLookAtPos)
-      }
-
-      mouseHasMoved = false
-    }
-
-    // Mise à jour des contrôles
     controls.update()
-
-    // Rendu de la scène
     renderer.render(scene, camera)
-
-    // Profilage : Fin du chronomètre
-    const frameEnd = performance.now()
-    const frameDuration = frameEnd - frameStart
-    if (frameDuration > 16) { // Si la frame prend plus de 16ms
-      console.warn(`[Performance] Frame took ${frameDuration.toFixed(2)}ms`)
-    }
   }
 
-  // Démarrer l'animation
   animate()
 }
 
-// Gestion des mouvements de la souris avec optimisation
-function onMouseMove(event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-  mouseHasMoved = true
-}
-
-// Initialisation au montage du composant
 onMounted(() => {
   loadModel()
 })
 
-// Nettoyage avant le démontage du composant
 onBeforeUnmount(() => {
   if (animationId) cancelAnimationFrame(animationId)
-  window.removeEventListener('mousemove', onMouseMove)
   const container = document.getElementById('avatar-container')
   if (renderer) {
     renderer.dispose()
@@ -282,6 +215,7 @@ onBeforeUnmount(() => {
   }
 })
 </script>
+
 
 <style scoped>
 .loader {
