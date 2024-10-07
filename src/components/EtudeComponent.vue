@@ -1,7 +1,7 @@
 <template>
   <div class="relative isolate px-4 py-28 flex flex-col items-center justify-center bg-background">
     <h2 class="text-4xl font-bold tracking-tight text-text sm:text-5xl text-center mb-12">
-      Mes formations
+      Mes formations & Expériences
     </h2>
     <div class="w-full max-w-5xl">
       <!-- Conteneur de la timeline -->
@@ -99,8 +99,6 @@
   </div>
 </template>
 
-
-
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -112,11 +110,11 @@ export default {
   data() {
     return {
       formations: [
-      {
+        {
           year: '2024',
-          title: 'Master Développeur',
+          title: 'Master Développeur Full Stack',
           description:
-            "Cette formation de niveau avancé couvre des sujets tels que le développement avancé, la gestion de projets et la sécurité des données, préparant les étudiants à des rôles de leadership en informatique.",
+            "Formation avancée pour devenir un développeur full-stack avec maîtrise des frameworks modernes et gestion des projets complexes.",
           items: [
             { name: 'Développement Avancé', icon: ['fas', 'laptop-code'] },
             { name: 'Conception et Gestion de Projets', icon: ['fas', 'tasks'] },
@@ -125,22 +123,44 @@ export default {
           ],
         },
         {
+          year: '2023',
+          title: 'Développeur Talkme',
+          description:
+            "Contribué au développement d'ERP et de MES en Vue.js et Laravel, développement d'une application Node.js pour la centralisation de données en MongoDB et gestion avec Docker.",
+          items: [
+            { name: 'Développement ERP et MES', icon: ['fas', 'desktop'] },
+            { name: 'Application Node.js', icon: ['fas', 'code'] },
+            { name: 'Gestion Docker', icon: ['fab', 'docker'] },
+          ],
+        },
+        {
           year: '2022',
           title: 'Bachelor Développeur',
           description:
-            "Cette formation permet d'approfondir les compétences en informatique, en mettant l'accent sur le développement d'applications, la gestion des données et les interfaces utilisateur.",
+            "Mise en avant du développement d’applications et des compétences en bases de données et conception UI/UX.",
           items: [
-            { name: "Conception et Développement d'Interfaces Utilisateur", icon: ['fas', 'desktop'] },
+            { name: "Conception d'Interfaces Utilisateur", icon: ['fas', 'desktop'] },
             { name: 'Gestion des Données', icon: ['fas', 'database'] },
             { name: 'Développement Multicouche', icon: ['fas', 'layer-group'] },
-            { name: "Diplôme Bac+3, Concepteur, Développeur d'application", icon: ['fas', 'graduation-cap'] },
+            { name: 'Diplôme Bac+3', icon: ['fas', 'graduation-cap'] },
+          ],
+        },
+        {
+          year: '2021',
+          title: 'Développeur Ody-cd',
+          description:
+            "Développement d'un bot utilisant l'API Discord, analyse des données via Google Sentiment, publication automatique sur Discord.",
+          items: [
+            { name: 'API Discord', icon: ['fas', 'network-wired'] },
+            { name: 'Analyse Google Sentiment', icon: ['fas', 'code'] },
+            { name: 'Gestion des Messages Discord', icon: ['fab', 'bots'] },
           ],
         },
         {
           year: '2020',
-          title: 'BTS Services numériques',
+          title: 'BTS Services Numériques',
           description:
-            "Cette formation prépare les étudiants à intervenir sur des systèmes informatisés et automatisés, que ce soit en termes de conception, d'installation, de maintenance, d'exploitation, ou de commercialisation dans un environnement industriel.",
+            "Formation initiale pour acquérir des compétences en développement logiciel, administration des réseaux, et intégration de systèmes.",
           items: [
             { name: 'Conception et Développement de Logiciels', icon: ['fas', 'code'] },
             { name: 'Administration Réseaux', icon: ['fas', 'network-wired'] },
@@ -153,6 +173,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 /* Styles personnalisés pour la timeline */
 .relative::before {
@@ -176,7 +197,5 @@ export default {
   .mb-16 {
     margin-bottom: 2rem;
   }
-
 }
 </style>
-

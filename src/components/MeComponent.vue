@@ -72,7 +72,6 @@ const cvLink = '/cv_cyril_dohin.pdf'
 
 // Icônes sociales
 const socialIcons = [
-  { name: 'Facebook', href: 'https://www.facebook.com/cyril.dohin?locale=fr_FR', icon: ['fab', 'facebook'], label: 'Facebook' },
   { name: 'GitHub', href: 'https://github.com/cyrildh', icon: ['fab', 'github'], label: 'GitHub' },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/cyril-dohin/', icon: ['fab', 'linkedin'], label: 'LinkedIn' },
 ]

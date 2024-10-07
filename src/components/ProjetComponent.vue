@@ -91,5 +91,37 @@ const features = [
       { name: 'Binance API', icon: ['fas', 'code'] },
     ],
   },
+  {
+    name: 'Bot Discord',
+    description:
+      "Développement d'un bot utilisant l'API Discord, analyse des données via Google Sentiment, et publication automatique sur Discord.",
+    image: require('@/assets/discord-bot.jpg'),
+    technos: [
+      { name: 'Node.js', icon: ['fas', 'code'] },
+      { name: 'Discord', icon: ['fas', 'robot'] },
+      { name: 'Google Sentiment API', icon: ['fas', 'code'] },
+    ],
+  },
+  {
+    name: 'ERP et MES - Talkme',
+    description:
+      "Contribué au développement d'ERP et de MES en Vue.js et Laravel, et d'une application Node.js pour la centralisation de données en MongoDB.",
+    image: require('@/assets/erp-mes.png'),
+    technos: [
+      { name: 'Vue.js', icon: ['fab', 'vuejs'] },
+      { name: 'Laravel', icon: ['fab', 'laravel'] },
+      { name: 'MongoDB', icon: ['fas', 'database'] },
+      { name: 'Docker', icon: ['fab', 'docker'] },
+      { name: 'Sql', icon: ['fas', 'database'] },
+
+    ],
+  },
 ];
 </script>
+
+<style scoped>
+/* Styles personnalisés pour les projets */
+.bg-gray-100 {
+  background-color: #f5f5f5;
+}
+</style>

@@ -30,12 +30,6 @@ import SocialIcon from './SocialIcon.vue'
 
 const socialIcons = [
   {
-    name: 'Facebook',
-    href: 'https://www.facebook.com/cyril.dohin?locale=fr_FR', // Remplacez par votre lien Facebook
-    icon: ['fab', 'facebook'],
-    label: 'Facebook',
-  },
-  {
     name: 'GitHub',
     href: 'https://github.com/cyrildh', // Remplacez par votre lien GitHub
     icon: ['fab', 'github'],
