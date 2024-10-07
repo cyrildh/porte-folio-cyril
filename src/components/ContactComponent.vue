@@ -85,7 +85,7 @@
   
   const submitForm = async () => {
     try {
-      const response = await fetch('https://ro70yafdcg.execute-api.eu-west-3.amazonaws.com/prod', { // Utiliser l'URL de production
+      const response = await fetch('https://ro70yafdcg.execute-api.eu-west-3.amazonaws.com/prod/send_mail', { // Utiliser l'URL de production
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
