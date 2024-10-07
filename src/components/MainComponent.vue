@@ -26,7 +26,7 @@
         <a
           href="#header"
           class="text-sm font-semibold leading-6 text-text"
-        >Moi</a>
+        >Accueil</a>
         <a
           href="#competence"
           class="text-sm font-semibold leading-6 text-text"
