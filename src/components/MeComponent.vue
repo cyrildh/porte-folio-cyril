@@ -64,24 +64,26 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+// Données statiques
 const name = 'Développeur'
-const title = 'full stack'
+const title = 'Full Stack'
 const labelText = 'Cyril Dohin'
 const cvLink = '/cv_cyril_dohin.pdf'
 
+// Icônes sociales
 const socialIcons = [
   { name: 'Facebook', href: 'https://www.facebook.com/cyril.dohin?locale=fr_FR', icon: ['fab', 'facebook'], label: 'Facebook' },
   { name: 'GitHub', href: 'https://github.com/cyrildh', icon: ['fab', 'github'], label: 'GitHub' },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/cyril-dohin/', icon: ['fab', 'linkedin'], label: 'LinkedIn' },
 ]
 
-// Références pour les objets Three.js
+// Références Three.js
 let renderer, scene, camera, controls, mixer
 let waveAction, stumbleAction
 let leftEye, rightEye
 let animationId
 
-// Variables pour la gestion des interactions
+// Gestion des interactions
 const mouse = new THREE.Vector2()
 const raycaster = new THREE.Raycaster()
 let lastLookAtPos = new THREE.Vector3()
@@ -186,10 +188,14 @@ function setupScene(gltf) {
   const waveClip = THREE.AnimationClip.findByName(clips, 'waving')
   const stumbleClip = THREE.AnimationClip.findByName(clips, 'stragger')
 
-  waveAction = mixer.clipAction(waveClip)
-  stumbleAction = mixer.clipAction(stumbleClip)
+  if (waveClip) {
+    waveAction = mixer.clipAction(waveClip)
+    waveAction.play()
+  }
 
-  waveAction.play()
+  if (stumbleClip) {
+    stumbleAction = mixer.clipAction(stumbleClip)
+  }
 
   const clock = new THREE.Clock()
 
@@ -197,11 +203,11 @@ function setupScene(gltf) {
   container.addEventListener('mousedown', () => {
     if (waveAction && stumbleAction) {
       stumbleAction.reset().play()
-      waveAction.crossFadeTo(stumbleAction, 0.3)
+      waveAction.crossFadeTo(stumbleAction, 0.3, false)
 
       setTimeout(() => {
         waveAction.reset().play()
-        stumbleAction.crossFadeTo(waveAction, 1)
+        stumbleAction.crossFadeTo(waveAction, 1, false)
       }, 4000)
     }
   })
@@ -211,8 +217,13 @@ function setupScene(gltf) {
 
   // Fonction d'animation optimisée
   function animate() {
+    // Profilage : Démarrage du chronomètre
+    const frameStart = performance.now()
+
     animationId = requestAnimationFrame(animate)
     const delta = clock.getDelta()
+
+    // Mise à jour des animations
     mixer.update(delta)
 
     // Mise à jour des yeux seulement si la souris a bougé
@@ -228,10 +239,21 @@ function setupScene(gltf) {
       mouseHasMoved = false
     }
 
+    // Mise à jour des contrôles
     controls.update()
+
+    // Rendu de la scène
     renderer.render(scene, camera)
+
+    // Profilage : Fin du chronomètre
+    const frameEnd = performance.now()
+    const frameDuration = frameEnd - frameStart
+    if (frameDuration > 16) { // Si la frame prend plus de 16ms
+      console.warn(`[Performance] Frame took ${frameDuration.toFixed(2)}ms`)
+    }
   }
 
+  // Démarrer l'animation
   animate()
 }
 
@@ -251,9 +273,12 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (animationId) cancelAnimationFrame(animationId)
   window.removeEventListener('mousemove', onMouseMove)
+  const container = document.getElementById('avatar-container')
   if (renderer) {
     renderer.dispose()
-    renderer.domElement.remove()
+    if (renderer.domElement && container.contains(renderer.domElement)) {
+      container.removeChild(renderer.domElement)
+    }
   }
 })
 </script>
