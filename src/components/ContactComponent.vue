@@ -17,7 +17,7 @@
         <transition name="fade">
           <div
             v-if="message"
-            :class="`w-full max-w-lg p-4 rounded-lg flex items-center space-x-3 text-white ${messageType === 'success' ? 'bg-green-500' : 'bg-red-500'}`"
+            :class="`w-full max-w-lg p-4 rounded-lg flex items-center space-x-3 text-white ${messageType === 'success' ? 'bg-components' : 'bg-red-500'}`"
             role="alert"
             aria-live="assertive"
           >
@@ -50,8 +50,9 @@
                 stroke-width="3"
                 d="M6 18L18 6M6 6l12 12"
                 @click="closeMessage"
-              />
+              />   
             </svg>
+            &times;
             <span>{{ message }}</span>
           </div>
         </transition>
@@ -288,7 +289,7 @@ const closeMessage = () => {
 const inputClass = (error) => {
   return error
     ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-    : 'border-gray-300 focus:border-green-500 focus:border-green-500';
+    : 'border-gray-300 focus:border-gray-300 focus:border-gray-300';
 };
 </script>
 <style scoped>
