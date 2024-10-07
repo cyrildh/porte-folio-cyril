@@ -22,7 +22,7 @@
           />
         </button>
       </div>
-      <div class="hidden lg:flex lg:gap-x-12">
+      <div class="container hidden lg:flex lg:gap-x-12">
         <a
           href="#header"
           class="text-sm font-semibold leading-6 text-text"
