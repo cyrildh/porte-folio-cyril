@@ -140,8 +140,8 @@ function setupScene(gltf) {
   const avatar = gltf.scene
   avatar.traverse((child) => {
     if (child.isMesh) {
-      // Simplification des matériaux si possible
-      child.material = new THREE.MeshStandardMaterial({ color: 0xffffff })
+      // Utilisation de MeshBasicMaterial pour améliorer les performances
+      child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
       child.castShadow = false
       child.receiveShadow = false
     }
@@ -215,6 +215,7 @@ onBeforeUnmount(() => {
   }
 })
 </script>
+
 
 
 <style scoped>
