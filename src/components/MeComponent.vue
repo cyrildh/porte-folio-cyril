@@ -1,12 +1,4 @@
 <template>
-  <head>
-    <link
-      rel="preload"
-      href="/avatar.glb"
-      as="fetch"
-      crossorigin="anonymous"
-    >
-  </head>
   <div class="h-screen flex items-center justify-center text-center bg-background2 relative pt-13">
     <!-- Contenu du portfolio -->
     <div class="relative z-10 px-4 lg:px-8">
@@ -65,6 +57,7 @@
 </template>
 
 <script setup>
+import { onMounted, onBeforeUnmount } from 'vue'
 import SocialIcon from './SocialIcon.vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -82,16 +75,26 @@ const socialIcons = [
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/cyril-dohin/', icon: ['fab', 'linkedin'], label: 'LinkedIn' },
 ]
 
-window.onload = () => loadModel()
+// Références pour les objets Three.js
+let renderer, scene, camera, controls, mixer
+let waveAction, stumbleAction
+let leftEye, rightEye
+let animationId
 
-let leftEye, rightEye, mixer, waveAction, stumbleAction
+// Variables pour la gestion des interactions
+const mouse = new THREE.Vector2()
+const raycaster = new THREE.Raycaster()
+let lastLookAtPos = new THREE.Vector3()
+let mouseHasMoved = false
 
+// Fonction de chargement du modèle
 async function loadModel() {
   const loader = new GLTFLoader()
   const dracoLoader = new DRACOLoader()
   dracoLoader.setDecoderPath('/draco/')
   loader.setDRACOLoader(dracoLoader)
   loader.setCrossOrigin('anonymous')
+
   loader.load(
     'avatar.glb',
     (gltf) => {
@@ -105,19 +108,25 @@ async function loadModel() {
   )
 }
 
+// Fonction de configuration de la scène
 function setupScene(gltf) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-  renderer.outputColorSpace = THREE.SRGBColorSpace
   const container = document.getElementById('avatar-container')
+
+  // Initialisation du renderer
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.setSize(container.clientWidth, container.clientHeight)
-  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Limitation du pixel ratio
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   container.appendChild(renderer.domElement)
 
-  const camera = new THREE.PerspectiveCamera(20, container.clientWidth / container.clientHeight)
+  // Initialisation de la caméra
+  camera = new THREE.PerspectiveCamera(20, container.clientWidth / container.clientHeight, 0.1, 100)
   camera.position.set(0, -0.3, 1.0)
-  const controls = new OrbitControls(camera, renderer.domElement)
+
+  // Initialisation des contrôles
+  controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
   controls.enablePan = false
   controls.enableZoom = false
@@ -127,47 +136,53 @@ function setupScene(gltf) {
   controls.target.set(0, 1.4, 0)
   controls.update()
 
-  const scene = new THREE.Scene()
-  scene.add(new THREE.AmbientLight())
+  // Création de la scène
+  scene = new THREE.Scene()
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5)) // Lumière ambiante ajustée
 
-  const spotlight = new THREE.SpotLight(0xffffff, 20, 8, 1)
-  spotlight.penumbra = 0.5
+  // Configuration des lumières principales
+  const spotlight = new THREE.SpotLight(0xffffff, 10, 8, Math.PI / 6, 0.3, 1)
   spotlight.position.set(0, 4, 2)
   spotlight.castShadow = true
+  spotlight.shadow.mapSize.width = 1024
+  spotlight.shadow.mapSize.height = 1024
+  spotlight.shadow.camera.near = 1
+  spotlight.shadow.camera.far = 15
   scene.add(spotlight)
 
   const keyLight = new THREE.DirectionalLight(0xffffff, 2)
   keyLight.position.set(1, 1, 2)
-  keyLight.lookAt(new THREE.Vector3())
+  keyLight.castShadow = true
+  keyLight.shadow.mapSize.width = 1024
+  keyLight.shadow.mapSize.height = 1024
   scene.add(keyLight)
 
+  // Ajout du modèle à la scène
   const avatar = gltf.scene
-
+  avatar.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true
+      child.receiveShadow = true
+      // Identification des yeux si présents
+      if (child.name.toLowerCase().includes('left_eye')) leftEye = child
+      if (child.name.toLowerCase().includes('right_eye')) rightEye = child
+    }
+  })
   scene.add(avatar)
 
+  // Ajout du sol
   const groundGeometry = new THREE.CylinderGeometry(0.6, 0.6, 0.1, 64)
-  const groundMaterial = new THREE.MeshStandardMaterial()
+  const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 })
   const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial)
   groundMesh.castShadow = false
   groundMesh.receiveShadow = true
   groundMesh.position.y -= 0.05
   scene.add(groundMesh)
 
-  // Raycaster pour obtenir la position de la souris
-  const mouse = new THREE.Vector2()
-  const raycaster = new THREE.Raycaster()
-
-  window.addEventListener('mousemove', (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-    raycaster.setFromCamera(mouse, camera)
-  })
-
-  // Mixer pour les animations
+  // Configuration des animations
   mixer = new THREE.AnimationMixer(avatar)
   const clips = gltf.animations
 
-  // Récupération des animations par nom
   const waveClip = THREE.AnimationClip.findByName(clips, 'waving')
   const stumbleClip = THREE.AnimationClip.findByName(clips, 'stragger')
 
@@ -178,7 +193,7 @@ function setupScene(gltf) {
 
   const clock = new THREE.Clock()
 
-  // Ajouter l'interaction avec les clics pour lancer stumbleAction
+  // Gestion des interactions avec les clics
   container.addEventListener('mousedown', () => {
     if (waveAction && stumbleAction) {
       stumbleAction.reset().play()
@@ -191,25 +206,56 @@ function setupScene(gltf) {
     }
   })
 
+  // Gestion des mouvements de la souris
+  window.addEventListener('mousemove', onMouseMove)
+
+  // Fonction d'animation optimisée
   function animate() {
-    requestAnimationFrame(animate)
-    mixer.update(clock.getDelta())
+    animationId = requestAnimationFrame(animate)
+    const delta = clock.getDelta()
+    mixer.update(delta)
 
-    // Obtenir la position à regarder pour les yeux
-    const lookAtPos = new THREE.Vector3()
-    raycaster.ray.at(2, lookAtPos) // Position 3D à 2 unités de distance
+    // Mise à jour des yeux seulement si la souris a bougé
+    if (mouseHasMoved) {
+      raycaster.setFromCamera(mouse, camera)
+      raycaster.ray.at(2, lastLookAtPos)
 
-    // Tourner les yeux vers cette position
-    if (leftEye && rightEye) {
-      leftEye.lookAt(lookAtPos)
-      rightEye.lookAt(lookAtPos)
+      if (leftEye && rightEye) {
+        leftEye.lookAt(lastLookAtPos)
+        rightEye.lookAt(lastLookAtPos)
+      }
+
+      mouseHasMoved = false
     }
 
+    controls.update()
     renderer.render(scene, camera)
   }
 
   animate()
 }
+
+// Gestion des mouvements de la souris avec optimisation
+function onMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+  mouseHasMoved = true
+}
+
+// Initialisation au montage du composant
+onMounted(() => {
+  loadModel()
+})
+
+// Nettoyage avant le démontage du composant
+onBeforeUnmount(() => {
+  if (animationId) cancelAnimationFrame(animationId)
+  window.removeEventListener('mousemove', onMouseMove)
+  if (renderer) {
+    renderer.dispose()
+    renderer.domElement.remove()
+  }
+})
 </script>
 
 <style scoped>
