@@ -20,7 +20,6 @@ app.use(cors(corsOptions));
 
 // Fonction pour créer le transporteur Nodemailer
 const createTransporter = async () => {
-  // Créez un transporteur SMTP
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -41,7 +40,7 @@ app.post('/api/send-email', async (req, res) => {
 
   // Vérifier que tous les champs sont présents
   if (!name || !email || !message) {
-    return res.status(400).send('Tous les champs sont requis');
+    return res.status(400).json({ error: 'Tous les champs sont requis' });
   }
 
   try {
@@ -58,10 +57,10 @@ app.post('/api/send-email', async (req, res) => {
 
     // Envoyer l'email
     await transporter.sendMail(mailOptions);
-    res.status(200).send('Email envoyé avec succès');
+    res.status(200).json({ message: 'Email envoyé avec succès' });
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'email:', error.message);
-    res.status(500).send('Erreur lors de l\'envoi de l\'email');
+    res.status(500).json({ error: 'Erreur lors de l\'envoi de l\'email' });
   }
 });
 
