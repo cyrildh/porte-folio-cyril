@@ -19,7 +19,7 @@ jobs:
           KEY: ${{ secrets.SERVER_SSH_KEY }}
         run: |
           ssh -i "${KEY}" -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
-            cd /chemin/vers/votre/application
+            cd /var/www/porte-folio-cyril
             git pull origin main
             npm install
             npm run build
