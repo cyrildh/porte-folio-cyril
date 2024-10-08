@@ -1,58 +1,27 @@
-name: Deploy to AWS S3 and CloudFront
+name: Déploiement Automatique
 
 on:
   push:
     branches:
-      - master # Remplacez par votre branche principale si différent
+      - main  # Déclenche le workflow lors d'un push sur la branche principale
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # Étape 1 : Checkout du code
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Cloner le dépôt
+        uses: actions/checkout@v2
 
-      # Étape 2 : Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16' # Utilisez la version Node.js compatible avec votre projet
-
-      # Étape 3 : Cache des dépendances Node.js (Optionnel)
-      - name: Cache Node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # Étape 4 : Installer les dépendances
-      - name: Install Dependencies
-        run: npm install
-
-      # Étape 5 : Build du projet
-      - name: Build Project
-        run: npm run build
-
-      # Étape 6 : Configurer les credentials AWS
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'eu-west-3' # Remplacez par votre région AWS
-
-      # Étape 7 : Déployer sur S3
-      - name: Deploy to S3
-        run: aws s3 sync dist/ s3://cyril-dohin.fr/ --delete
+      - name: Déployer sur le serveur
         env:
-          AWS_REGION: 'eu-west-3'
-
-      # Étape 8 : Invalider le cache CloudFront
-      - name: Invalidate CloudFront Cache
-        run: aws cloudfront create-invalidation --distribution-id E30TZHHHE5ETBR --paths "/*"
-        env:
-          AWS_REGION: 'eu-west-3' # Remplacez par votre région AWS
+          HOST: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USER }}
+          KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          ssh -i "${KEY}" -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
+            cd /chemin/vers/votre/application
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all
+          EOF
