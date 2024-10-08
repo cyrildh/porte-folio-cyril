@@ -241,7 +241,7 @@ const submitForm = async () => {
   message.value = '';
   
   try {
-    const response = await fetch('/send-email', { // Utiliser l'URL de production
+    const response = await fetch('/api/send-email', { // Utiliser l'URL de production
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Route pour envoyer un email
-app.post('/send-email', async (req, res) => {
+app.post('/api/send-email', async (req, res) => {
   const { name, email, message } = req.body;
 
   // Vérifier que tous les champs sont présents
