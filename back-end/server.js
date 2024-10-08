@@ -8,9 +8,12 @@ const port = 3001;
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: 'https://cyrildohin.fr', // Remplace par ton domaine de frontend
-}));
+const corsOptions = {
+  origin: 'https://cyril-dohin.fr', // Domaine autorisé
+  optionsSuccessStatus: 200 // Pour supporter les navigateurs plus anciens
+};
+
+app.use(cors(corsOptions));
 
 // Route pour envoyer un email
 app.post('/send-email', async (req, res) => {
