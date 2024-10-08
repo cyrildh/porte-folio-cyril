@@ -4,11 +4,13 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://cyrildohin.fr', // Remplace par ton domaine de frontend
+}));
 
 // Route pour envoyer un email
 app.post('/send-email', async (req, res) => {

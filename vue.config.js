@@ -17,9 +17,9 @@ module.exports = {
   devServer: {
     proxy: {
       '/send-email': {
-        target: 'https://cyrildohin:3001',
-        changeOrigin: true,
-      },
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+      }
     },
   },
 };
