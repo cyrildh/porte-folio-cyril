@@ -3,7 +3,7 @@ name: Déploiement Automatique
 on:
   push:
     branches:
-      - main  # Déclenche le workflow lors d'un push sur la branche principale
+      - master  # Déclenche le workflow lors d'un push sur la branche principale
 
 jobs:
   deploy:
