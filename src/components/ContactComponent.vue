@@ -172,7 +172,6 @@
                 />
               </svg>
             </span>
-            Envoyer
           </button>
         </div>
       </form>
