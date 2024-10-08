@@ -241,7 +241,7 @@ const submitForm = async () => {
   message.value = '';
   
   try {
-    const response = await fetch('/api/send-email', { // Utiliser l'URL de production
+    const response = await fetch('https://cyrildohin.fr/api/send-email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

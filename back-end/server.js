@@ -18,20 +18,29 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Logs pour vérifier les variables d'environnement (à retirer en production)
+console.log('EMAIL_USER:', process.env.EMAIL_USER);
+console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Défini' : 'Non défini');
+
 // Fonction pour créer le transporteur Nodemailer
 const createTransporter = async () => {
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER, // Votre adresse e-mail Gmail
-      pass: process.env.EMAIL_PASS, // Mot de passe d'application ou mot de passe Gmail
-    },
-  });
+  try {
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER, // Votre adresse e-mail Gmail
+        pass: process.env.EMAIL_PASS, // Mot de passe d'application ou mot de passe Gmail
+      },
+    });
 
-  // Vérifiez la connexion au serveur SMTP
-  await transporter.verify();
-  console.log('Connexion au serveur SMTP réussie');
-  return transporter;
+    // Vérifiez la connexion au serveur SMTP
+    await transporter.verify();
+    console.log('Connexion au serveur SMTP réussie');
+    return transporter;
+  } catch (error) {
+    console.error('Erreur lors de la création du transporteur SMTP:', error.message);
+    throw new Error('Échec de la connexion SMTP');
+  }
 };
 
 // Route pour envoyer un email
