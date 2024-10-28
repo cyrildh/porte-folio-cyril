@@ -172,7 +172,7 @@
                 />
               </svg>
             </span>
-            Envoyerrrrrrrr
+            Envoyer
           </button>
         </div>
       </form>
