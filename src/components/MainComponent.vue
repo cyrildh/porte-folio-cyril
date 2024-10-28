@@ -32,9 +32,9 @@
           class="text-sm font-semibold leading-6 text-text"
         >Mes compétences</a>
         <a
-          href="#projets"
+          href="#realisations"
           class="text-sm font-semibold leading-6 text-text"
-        >Mes projets</a>
+        >Mes réalisations</a>
         <a
           href="#formations"
           class="text-sm font-semibold leading-6 text-text"
@@ -63,10 +63,10 @@
           @click="closeMenu"
         >Mes compétences</a>
         <a
-          href="#projets"
+          href="#realisations"
           class="block text-base font-semibold leading-6 text-text rounded-md p-2"
           @click="closeMenu"
-        >Mes projets</a>
+        >Mes réalisations</a>
         <a
           href="#formations"
           class="block text-base font-semibold leading-6 text-text rounded-md p-2"
@@ -95,7 +95,7 @@
       <CompetenceComponent />
     </section>
     <section
-      id="projets"
+      id="realisations"
       class="fade-in"
     >
       <ProjetComponent />

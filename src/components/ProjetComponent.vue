@@ -3,10 +3,10 @@
     <!-- Section Titre -->
     <div class="mx-auto max-w-2xl lg:text-center">
       <h2 class="text-4xl font-bold tracking-tight text-text sm:text-6xl">
-        Mes projets
+        Mes réalisations
       </h2>
       <p class="mt-6 text-lg leading-8 text-text">
-        Chaque projet a été une opportunité d'explorer différentes technologies, de collaborer avec des équipes différentes, et de résoudre des défis techniques.
+        Chaque réalisations a été une opportunité d'explorer différentes technologies, de collaborer avec des équipes différentes, et de résoudre des défis techniques.
       </p>
     </div>
 
@@ -105,7 +105,7 @@ const features = [
   {
     name: 'ERP et MES - Talkme',
     description:
-      "Contribué au développement d'ERP et de MES en Vue.js et Laravel, et d'une application Node.js pour la centralisation de données en MongoDB.",
+      "Contribuez au développement d'ERP et de MES en Vue.js et Laravel, et d'une application Node.js pour la centralisation de données en MongoDB.",
     image: require('@/assets/erp-mes.png'),
     technos: [
       { name: 'Vue.js', icon: ['fab', 'vuejs'] },
