@@ -21,6 +21,16 @@
       <div class="w-full bg-background p-4 text-center">
         © 2024 Copyright: Cyril Dohin
       </div>
+      <div class="w-full bg-background p-4 text-center">
+        <a
+          href="/mentions-legales"
+          class="text-surface hover:underline mx-2"
+        >Mentions légales</a>
+        <a
+          href="/politique-de-confidentialite"
+          class="text-surface hover:underline mx-2"
+        >Politique de confidentialité</a>
+      </div>
     </div>
   </footer>
 </template>
