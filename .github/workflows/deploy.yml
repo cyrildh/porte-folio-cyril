@@ -16,16 +16,15 @@ jobs:
         env:
           KEY: ${{ secrets.SERVER_SSH_KEY }}
         run: |
-          # Sauvegarder la clé privée dans un fichier temporaire
           echo "${KEY}" > /tmp/deploy_key
-          chmod 600 /tmp/deploy_key  # Assurez-vous que les permissions sont correctes
+          chmod 600 /tmp/deploy_key
+          cat /tmp/deploy_key  # Ajoutez cette ligne pour vérifier le contenu de la clé privée
 
       - name: Déployer sur le serveur
         env:
           HOST: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
         run: |
-          # Utiliser la clé privée pour se connecter au serveur
           ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
             cd /var/www/porte-folio-cyril
             git pull origin main

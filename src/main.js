@@ -18,8 +18,7 @@ import {
   faGraduationCap,
   faEnvelope,
   faDownload,
-  faRobot,
-  faTimes,
+  faRobot
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faVuejs,
@@ -34,8 +33,7 @@ import {
   faFacebook,
   faLinkedin,
   faGithub,
-  faBots,
-  faWordpress,
+  faBots
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
@@ -64,9 +62,7 @@ library.add(
   faLinkedin,
   faGithub,
   faBots,
-  faRobot,
-  faTimes,
-  faWordpress,
+  faRobot
 )
 
 // Créez l'application et assignez-la à une variable
