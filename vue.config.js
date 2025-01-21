@@ -17,7 +17,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/send-email': {
-          target: 'http://localhost:3003',
+          target: 'http://localhost:3000',
           changeOrigin: true,
       }
     },
