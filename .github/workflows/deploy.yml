@@ -29,21 +29,16 @@ jobs:
           echo "${KEY}" > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
 
-      # Étape 4 : Déployer les fichiers construits sur le serveur
-      - name: Transférer les fichiers construits
+          
+      - name: Déployer sur le serveur
         env:
           HOST: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
         run: |
-          scp -i /tmp/deploy_key -o StrictHostKeyChecking=no -r dist/* ${USERNAME}@${HOST}:/var/www/porte-folio-cyril
-
-      # Étape 5 : Redémarrer l'application avec pm2
-      - name: Redémarrer le serveur
-        env:
-          HOST: ${{ secrets.SERVER_HOST }}
-          USERNAME: ${{ secrets.SERVER_USER }}
-        run: |
-          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
+          ssh -o ServerAliveInterval=60 -i /tmp/deploy_key -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
             cd /var/www/porte-folio-cyril
+            git pull origin main
+            npm install
+            npm run build
             pm2 restart all
           EOF
