@@ -35,7 +35,7 @@ jobs:
           HOST: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
         run: |
-          ssh -o ServerAliveInterval=60 -i /tmp/deploy_key -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
             cd /var/www/porte-folio-cyril
             git pull origin master
             npm install
