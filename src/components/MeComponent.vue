@@ -68,7 +68,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 const name = 'Développeur'
 const title = 'Full Stack'
 const labelText = 'Cyril Dohin'
-const cvLink = '/cv_cyril_dohin.pdf'
+const cvLink = '/CV_cyril_dohin.pdf'
 
 // Icônes sociales
 const socialIcons = [

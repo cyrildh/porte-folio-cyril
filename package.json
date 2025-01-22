@@ -30,7 +30,8 @@
     "three": "^0.169.0",
     "tsparticles": "^3.5.0",
     "vue": "^3.2.13",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.0",
+    "vue3-carousel": "^0.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
