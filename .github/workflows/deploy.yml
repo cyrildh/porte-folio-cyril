@@ -27,7 +27,7 @@ jobs:
         run: |
           ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no ${USERNAME}@${HOST} << 'EOF'
             cd /var/www/porte-folio-cyril
-            git pull origin main
+            git pull origin master
             npm install
             npm run build
             pm2 restart all
