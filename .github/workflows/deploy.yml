@@ -29,6 +29,6 @@ jobs:
             cd /var/www/porte-folio-cyril
             git pull origin master
             npm install
-            npm run build
+            NODE_OPTIONS="--max-old-space-size=4096" npm run build
             pm2 restart all
           EOF
