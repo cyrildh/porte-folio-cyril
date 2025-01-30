@@ -1,201 +1,163 @@
 <template>
-  <div class="relative isolate px-4 py-28 flex flex-col items-center justify-center bg-background">
-    <h2 class="text-4xl font-bold tracking-tight text-text sm:text-5xl text-center mb-12">
-      Mes formations & Expériences
-    </h2>
-    <div class="w-full max-w-5xl">
-      <!-- Conteneur de la timeline -->
-      <div class="relative">
-        <!-- Ligne verticale (affichée uniquement sur desktop) -->
-        <div class="hidden md:block border-l-4 border-text2 absolute h-full left-1/2 transform -translate-x-1/2 z-0" />
+  <section class="relative isolate px-4 py-28 bg-background dark:bg-background-dark">
+    <div class="mx-auto max-w-7xl">
+      <h2 class="text-4xl font-bold tracking-tight text-text-primary dark:text-text-inverted sm:text-5xl text-center mb-16">
+        <span class="bg-clip-text text-transparent bg-text-accent">Parcours</span> Professionnel
+      </h2>
 
-        <!-- Éléments de la timeline -->
-        <div
-          v-for="(formation, index) in formations"
-          :key="formation.year"
-          class="mb-16 flex flex-col md:flex-row items-center w-full"
-        >
-          <div
-            :class="{
-              'md:flex-row': index % 2 === 0,
-              'md:flex-row-reverse': index % 2 !== 0,
-              'flex': true,
-              'items-center': true,
-              'justify-between': true,
-              'w-full': true,
-            }"
+      <!-- Timeline container -->
+      <div class="relative">
+        <!-- Timeline line -->
+        <div class="absolute left-1/2 w-1 bg-gradient-to-b from-primary/20 to-background2 h-full -translate-x-1/2 hidden md:block" />
+
+        <div class="space-y-16 md:space-y-24">
+          <!-- Timeline item -->
+          <div 
+            v-for="(item, index) in timelineItems"
+            :key="index"
+            class="relative group"
+            data-aos="fade-up"
           >
-            <!-- Contenu pour mobile -->
-            <div class="md:hidden w-full">
-              <div class="bg-white shadow-xl rounded-lg p-6">
-                <div class="flex items-center mb-4">
-                  <div class="bg-text2 text-white font-semibold text-base w-12 h-12 flex items-center justify-center rounded-full shadow-lg mr-2">
-                    {{ formation.year }}
+            <!-- Content container -->
+            <div class="flex flex-col md:grid md:grid-cols-5 gap-8 items-center">
+              <!-- Date (left) -->
+              <div class="md:col-span-2 flex justify-end">
+                <div class="hidden md:flex items-center gap-4 w-full max-w-xs">
+                  <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600" />
+                  <div class="text-text2 dark:text-primary-light text-2xl font-bold px-4 py-2 rounded-full bg-white dark:bg-surface-dark shadow-lg">
+                    {{ item.year }}
                   </div>
-                  <h3 class="text-xl font-bold text-text">
-                    {{ formation.title }}
-                  </h3>
                 </div>
-                <p class="text-gray-600 text-justify text-sm">
-                  {{ formation.description }}
-                </p>
-                <ul class="mt-4 space-y-2">
-                  <li
-                    v-for="item in formation.items"
-                    :key="item.name"
-                    class="flex items-start"
-                  >
-                    <font-awesome-icon
-                      :icon="item.icon"
-                      class="h-4 w-4 text-text2 mr-2 mt-1"
-                      aria-hidden="true"
+              </div>
+
+              <!-- Connector (mobile) -->
+              <div class="md:hidden absolute left-1/2 -translate-x-1/2 top-8 w-1 h-full bg-gray-200 dark:bg-gray-700" />
+
+              <!-- Card -->
+              <div class="md:col-span-3 w-full">
+                <div class="relative bg-surface dark:bg-surface-dark rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <!-- Timeline dot -->
+                  <div class="absolute -left-4 top-8 md:-left-8 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-lg border-4 border-white dark:border-gray-800">
+                    <font-awesome-icon 
+                      :icon="item.icon" 
+                      class="w-4 h-4 text-white" 
                     />
-                    <span class="font-semibold text-text text-sm text-left">
-                      {{ item.name }}
-                    </span>
-                  </li>
-                </ul>
+                  </div>
+
+                  <h3 class="text-2xl font-bold text-text-primary dark:text-text-inverted mb-4">
+                    {{ item.title }}
+                  </h3>
+                  
+                  <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    {{ item.description }}
+                  </p>
+
+                  <!-- Tags -->
+                  <div class="flex flex-wrap gap-2">
+                    <div 
+                      v-for="(tag, tagIndex) in item.tags"
+                      :key="tagIndex"
+                      class="flex items-center px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-sm"
+                    >
+                      <font-awesome-icon 
+                        :icon="tag.icon"
+                        class="w-4 h-4 mr-2 text-primary dark:text-primary-light"
+                      />
+                      <span class="text-text-secondary dark:text-gray-300">
+                        {{ tag.name }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <!-- Contenu pour desktop -->
-            <div class="hidden md:flex w-full md:w-5/12">
-              <div class="bg-white shadow-xl rounded-lg p-6">
-                <h3 class="mb-2 text-2xl font-bold text-text">
-                  {{ formation.title }}
-                </h3>
-                <p class="text-gray-600 text-justify">
-                  {{ formation.description }}
-                </p>
-                <ul class="mt-4 space-y-2">
-                  <li
-                    v-for="item in formation.items"
-                    :key="item.name"
-                    class="flex items-start"
-                  >
-                    <font-awesome-icon
-                      :icon="item.icon"
-                      class="h-5 w-5 text-text2 mr-2 mt-1"
-                      aria-hidden="true"
-                    />
-                    <span class="font-semibold text-text text-left">
-                      {{ item.name }}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <!-- Cercle de l'année (affiché uniquement sur desktop) -->
-            <div class="hidden md:flex w-full md:w-1/12 justify-center items-center z-10 my-8 md:my-0">
-              <div class="bg-text2 text-white font-semibold text-lg w-16 h-16 flex items-center justify-center rounded-full shadow-lg">
-                {{ formation.year }}
-              </div>
-            </div>
-            <!-- Espace vide pour desktop -->
-            <div class="hidden md:block w-5/12" />
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
-<script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+<script setup>
+import { ref } from 'vue'
 
-export default {
-  name: 'EtudeComponent',
-  components: {
-    FontAwesomeIcon,
+const timelineItems = ref([
+  {
+    year: '2024',
+    title: 'Master Développeur Full Stack',
+    icon: ['fas', 'graduation-cap'],
+    description: 'Formation avancée pour devenir un développeur full-stack avec maîtrise des frameworks modernes et gestion des projets complexes.',
+    tags: [
+      { name: 'Développement Avancé', icon: ['fas', 'laptop-code'] },
+      { name: 'Gestion de Projets', icon: ['fas', 'tasks'] },
+      { name: 'Sécurité des Données', icon: ['fas', 'shield-alt'] },
+      { name: 'Diplôme Bac+5', icon: ['fas', 'award'] }
+    ]
   },
-  data() {
-    return {
-      formations: [
-        {
-          year: '2024',
-          title: 'Master Développeur Full Stack',
-          description:
-            "Formation avancée pour devenir un développeur full-stack avec maîtrise des frameworks modernes et gestion des projets complexes.",
-          items: [
-            { name: 'Développement Avancé', icon: ['fas', 'laptop-code'] },
-            { name: 'Conception et Gestion de Projets', icon: ['fas', 'tasks'] },
-            { name: 'Sécurité et Gestion des Données', icon: ['fas', 'shield-alt'] },
-            { name: 'Diplôme Bac+5', icon: ['fas', 'graduation-cap'] },
-          ],
-        },
-        {
-          year: '2023',
-          title: 'Développeur Talkme',
-          description:
-            "Contribué au développement d'ERP et de MES en Vue.js et Laravel, développement d'une application Node.js pour la centralisation de données en MongoDB et gestion avec Docker.",
-          items: [
-            { name: 'Développement ERP et MES', icon: ['fas', 'desktop'] },
-            { name: 'Application Node.js', icon: ['fas', 'code'] },
-            { name: 'Gestion Docker', icon: ['fab', 'docker'] },
-          ],
-        },
-        {
-          year: '2022',
-          title: 'Bachelor Développeur',
-          description:
-            "Mise en avant du développement d’applications et des compétences en bases de données et conception UI/UX.",
-          items: [
-            { name: "Conception d'Interfaces Utilisateur", icon: ['fas', 'desktop'] },
-            { name: 'Gestion des Données', icon: ['fas', 'database'] },
-            { name: 'Développement Multicouche', icon: ['fas', 'layer-group'] },
-            { name: 'Diplôme Bac+3', icon: ['fas', 'graduation-cap'] },
-          ],
-        },
-        {
-          year: '2021',
-          title: 'Développeur Ody-cd',
-          description:
-            "Développement d'un bot utilisant l'API Discord, analyse des données via Google Sentiment, publication automatique sur Discord.",
-          items: [
-            { name: 'API Discord', icon: ['fas', 'network-wired'] },
-            { name: 'Analyse Google Sentiment', icon: ['fas', 'code'] },
-            { name: 'Gestion des Messages Discord', icon: ['fab', 'bots'] },
-          ],
-        },
-        {
-          year: '2020',
-          title: 'BTS Services Numériques',
-          description:
-            "Formation initiale pour acquérir des compétences en développement logiciel, administration des réseaux, et intégration de systèmes.",
-          items: [
-            { name: 'Conception et Développement de Logiciels', icon: ['fas', 'code'] },
-            { name: 'Administration Réseaux', icon: ['fas', 'network-wired'] },
-            { name: 'Intégration de Systèmes', icon: ['fas', 'project-diagram'] },
-            { name: 'Diplôme Bac+2', icon: ['fas', 'graduation-cap'] },
-          ],
-        },
-      ],
-    };
+  {
+    year: '2023',
+    title: 'Développeur Full Stack - Talkme',
+    icon: ['fas', 'laptop-code'],
+    description: "Développement d'ERP/MES en Vue.js/Laravel et création d'une application Node.js avec MongoDB.",
+    tags: [
+      { name: 'Vue.js', icon: ['fab', 'vuejs'] },
+      { name: 'Laravel', icon: ['fab', 'laravel'] },
+      { name: 'Node.js', icon: ['fab', 'node-js'] },
+      { name: 'Docker', icon: ['fab', 'docker'] }
+    ]
   },
-};
+  {
+    year: '2022',
+    title: 'Bachelor Développeur',
+    icon: ['fas', 'graduation-cap'],
+    description: 'Formation intensive en développement fullstack et gestion de bases de données.',
+    tags: [
+      { name: 'UI/UX', icon: ['fas', 'palette'] },
+      { name: 'Bases de Données', icon: ['fas', 'database'] },
+      { name: 'Architecture Logicielle', icon: ['fas', 'project-diagram'] },
+      { name: 'Diplôme Bac+3', icon: ['fas', 'award'] }
+    ]
+  },
+  {
+    year: '2021',
+    title: 'Développeur Bot Discord - Ody-cd',
+    icon: ['fas', 'robot'],
+    description: "Création d'un bot Discord avec analyse de sentiments et automatisation de publications.",
+    tags: [
+      { name: 'API Discord', icon: ['fab', 'discord'] },
+      { name: 'Analyse NLP', icon: ['fas', 'brain'] },
+      { name: 'Automatisation', icon: ['fas', 'magic'] }
+    ]
+  },
+  {
+    year: '2020',
+    title: 'BTS Services Numériques',
+    icon: ['fas', 'network-wired'],
+    description: 'Formation initiale en développement logiciel et administration réseau.',
+    tags: [
+      { name: 'Réseaux', icon: ['fas', 'network-wired'] },
+      { name: 'Développement Logiciel', icon: ['fas', 'code'] },
+      { name: 'Systèmes', icon: ['fas', 'server'] },
+      { name: 'Diplôme Bac+2', icon: ['fas', 'award'] }
+    ]
+  }
+])
 </script>
-
 <style scoped>
-/* Styles personnalisés pour la timeline */
-.relative::before {
-  content: '';
-  position: absolute;
-  width: 2px;
-  background-color: var(--tw-border-opacity);
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  margin-left: -1px;
+/* Animations */
+[data-aos] {
+  transition: all 0.8s ease-out;
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-@media (max-width: 768px) {
-  /* Masquer la ligne verticale sur mobile */
-  .relative::before,
-  .border-l-4 {
-    display: none;
-  }
-  /* Réinitialiser les marges des éléments */
-  .mb-16 {
-    margin-bottom: 2rem;
-  }
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gradient line animation */
+.group:hover .timeline-line {
+  background: linear-gradient(to bottom, #0D9488, #5EEAD4);
 }
 </style>

@@ -3,7 +3,7 @@
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
       <!-- En-tête -->
       <div class="bg-gradient-to-r bg-components py-8 px-6">
-        <h1 class="text-3xl font-bold text-white text-center">
+        <h1 class="text-3xl font-bold text-text-accent text-center">
           Politique de Confidentialité
         </h1>
       </div>
@@ -11,7 +11,7 @@
       <div class="p-8 space-y-8">
         <!-- Types de données collectées -->
         <section class="hover:bg-gray-50 rounded-lg p-6 transition duration-300">
-          <div class="flex items-start mb-4">
+          <div class="flex flex-col sm:flex-row items-start mb-4">
             <div class="p-2 bg-background rounded-lg mr-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@
                 Types de données collectées
               </h2>
               <p class="text-gray-600 leading-relaxed">
-                Nous collectons les données suivantes : 
+                Nous collectons les données suivantes :
                 <span class="block mt-2 ml-4">
                   • Nom et prénom<br>
                   • Adresse e-mail<br>
@@ -49,7 +49,7 @@
 
         <!-- Finalité de la collecte -->
         <section class="hover:bg-gray-50 rounded-lg p-6 transition duration-300">
-          <div class="flex items-start mb-4">
+          <div class="flex flex-col sm:flex-row items-start mb-4">
             <div class="p-2 bg-background rounded-lg mr-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@
 
         <!-- Durée de conservation -->
         <section class="hover:bg-gray-50 rounded-lg p-6 transition duration-300">
-          <div class="flex items-start mb-4">
+          <div class="flex flex-col sm:flex-row items-start mb-4">
             <div class="p-2 bg-background rounded-lg mr-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@
 
         <!-- Droits des utilisateurs -->
         <section class="hover:bg-gray-50 rounded-lg p-6 transition duration-300">
-          <div class="flex items-start mb-4">
+          <div class="flex flex-col sm:flex-row items-start mb-4">
             <div class="p-2 bg-background rounded-lg mr-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +148,7 @@
 
         <!-- Protection des données -->
         <section class="hover:bg-gray-50 rounded-lg p-6 transition duration-300">
-          <div class="flex items-start mb-4">
+          <div class="flex flex-col sm:flex-row items-start mb-4">
             <div class="p-2 bg-background rounded-lg mr-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

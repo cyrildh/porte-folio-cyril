@@ -1,63 +1,79 @@
 <template>
-  <div class="h-screen flex items-center justify-center text-center bg-background2 relative pt-13">
-    <!-- Contenu du portfolio -->
-    <div class="relative z-10 px-4 lg:px-8">
-      <div class="mx-auto max-w-7xl">
-        <div class="flex flex-col items-center justify-center text-center lg:flex-col lg:justify-around lg:space-x-8">
-          <div class="relative">
-            <div
-              id="avatar-container"
-              class="overflow-hidden mx-auto"
+  <section class="relative min-h-[80vh] flex items-center justify-center bg-gradient-to-b from-background to-background2 dark:from-background-dark dark:to-background-dark/90">
+    <!-- Effets de fond -->
+    <div class="absolute inset-0 bg-noise opacity-10 pointer-events-none -z-10" />
+    
+    <!-- Contenu principal -->
+    <div class="relative z-10 px-4 lg:px-8 max-w-8xl w-full">
+      <div class="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24">
+        <!-- Conteneur Avatar -->
+        <div class="relative w-full max-w-2xl aspect-square lg:aspect-[4/3]">
+          <div 
+            id="avatar-container"
+            class="relative h-full w-full"
+          >
+            <!-- Écran de chargement amélioré -->
+            <div 
+              id="avatar-loading"
+              v-show="isLoading"
+              class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm transition-opacity"
             >
-              <div
-                id="avatar-loading"
-                class="loader"
-              >
-                <div />
-                <div />
-                <div />
+              <div class="flex space-x-2">
+                <div class="w-4 h-4 bg-primary rounded-full animate-bounce"></div>
+                <div class="w-4 h-4 bg-primary rounded-full animate-bounce delay-100"></div>
+                <div class="w-4 h-4 bg-primary rounded-full animate-bounce delay-200"></div>
               </div>
             </div>
-            <span class="absolute lg:top-20 lg:right-40 top-10 right-4 bg-text2 text-white text-sm sm:text-base md:text-lg font-semibold px-2 py-1 rounded-tl-lg rounded-br-lg">
-              {{ labelText }}
-            </span>
           </div>
-          <div class="mt-4 sm:mt-6 lg:mt-10">
-            <h1 class="text-text text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight">
-              {{ name }}
-            </h1>
-            <h1 class="text-text text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mt-2 sm:mt-3">
+          
+          <!-- Badge animé -->
+          <span class="absolute top-4 right-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-fade-in-up">
+            {{ labelText }}
+          </span>
+        </div>
+
+        <!-- Contenu texte -->
+        <div class="text-center lg:text-left space-y-6 max-w-2xl">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary dark:text-text-inverted leading-tight">
+            <span class="text-text-accent">{{ name }}</span>
+            <br>
+            <span class="text-2xl md:text-3xl lg:text-4xl font-semibold text-text-secondary dark:text-text-inverted/80 mt-2 block">
               {{ title }}
-            </h1>
-            <a
-              :href="cvLink"
-              download
-              class="mt-4 sm:mt-6 inline-flex items-center px-6 py-2 sm:px-8 sm:py-2 bg-components text-white font-semibold text-base sm:text-lg rounded-xl shadow-lg transform transition-transform duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-border focus:ring-opacity-50"
-            >
-              <font-awesome-icon
-                :icon="['fas', 'download']"
-                class="h-4 w-4 sm:h-5 sm:w-5 mr-2"
-              />
-              Télécharger mon CV
-            </a>
-            <div class="mt-4 sm:mt-6 flex justify-center space-x-4">
-              <SocialIcon
-                v-for="icon in socialIcons"
-                :key="icon.name"
-                :href="icon.href"
-                :icon="icon.icon"
-                :label="icon.label"
-              />
-            </div>
+            </span>
+          </h1>
+
+          <!-- CTA amélioré -->
+          <a
+            :href="cvLink"
+            download
+            class="inline-flex items-center justify-center bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-primary/30 gap-3"
+          >
+            <font-awesome-icon 
+              :icon="['fas', 'file-arrow-down']" 
+              class="h-5 w-5"
+            />
+            Télécharger mon CV
+          </a>
+
+          <!-- Réseaux sociaux avec animations -->
+          <div class="flex justify-center lg:justify-start space-x-6 pt-4">
+            <SocialIcon
+              v-for="icon in socialIcons"
+              :key="icon.name"
+              :href="icon.href"
+              :icon="icon.icon"
+              :label="icon.label"
+              class="hover:-translate-y-1 transition-transform duration-300"
+            />
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SocialIcon from './SocialIcon.vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -82,27 +98,40 @@ let waveAction, stumbleAction
 let animationId
 
 const clock = new THREE.Clock()
+const isLoading = ref(true)
 
 // Fonction de chargement du modèle
 async function loadModel() {
-  const loader = new GLTFLoader()
-  const dracoLoader = new DRACOLoader()
-  dracoLoader.setDecoderPath('/draco/')
-  loader.setDRACOLoader(dracoLoader)
-  loader.setCrossOrigin('anonymous')
+  try {
+    const loader = new GLTFLoader()
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('/draco/')
+    loader.setDRACOLoader(dracoLoader)
 
-  loader.load(
-    'avatar.glb',
-    (gltf) => {
-      setupScene(gltf)
-      document.getElementById('avatar-loading').style.display = 'none'
-    },
-    undefined,
-    (error) => {
-      console.error('Erreur lors du chargement du modèle :', error)
-    }
-  )
+    const container = document.getElementById('avatar-container')
+    if (!container) throw new Error('Avatar container not found')
+
+    return new Promise((resolve, reject) => {
+      loader.load(
+        'avatar.glb',
+        (gltf) => {
+          resolve(gltf)
+          isLoading.value = false
+        },
+        undefined,
+        (error) => {
+          isLoading.value = false
+          reject(error)
+        }
+      )
+    })
+  } catch (error) {
+    console.error('Erreur lors du chargement du modèle :', error)
+    isLoading.value = false
+    throw error
+  }
 }
+
 
 // Fonction de configuration de la scène
 function setupScene(gltf) {
@@ -201,8 +230,13 @@ function setupScene(gltf) {
   animate()
 }
 
-onMounted(() => {
-  loadModel()
+onMounted(async () => {
+  try {
+    const gltf = await loadModel()
+    setupScene(gltf)
+  } catch (error) {
+    console.error('Erreur d\'initialisation :', error)
+  }
 })
 
 onBeforeUnmount(() => {
@@ -253,8 +287,16 @@ onBeforeUnmount(() => {
 }
 
 #avatar-container {
-  width: 800px;
-  height: 500px;
+  position: relative;
+  touch-action: none; /* Important pour les mobiles */
+  user-select: none;
+}
+
+#avatar-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+  pointer-events: auto !important;
 }
 
 @media screen and (max-width: 640px) {

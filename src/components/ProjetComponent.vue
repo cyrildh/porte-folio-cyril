@@ -1,199 +1,254 @@
 <template>
-  <div class="mx-auto max-w-7xl lg:px-8 px-4 flex flex-col justify-center items-center py-28">
+  <section class="mx-auto max-w-7xl px-4 lg:px-8 py-28 relative">
+    <!-- Effet de fond animé -->
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-background/20 to-transparent" aria-hidden="true" />
+
     <!-- Section Titre -->
     <div class="mx-auto max-w-2xl lg:text-center">
-      <h2 class="text-4xl font-bold tracking-tight text-text sm:text-6xl">
-        Mes réalisations
+      <h2 class="text-4xl font-bold tracking-tight text-text sm:text-6xl bg-clip-text text-transparent bg-text-primary">
+        Mes
+        <span class="bg-clip-text text-transparent bg-text-accent">réalisations</span>
       </h2>
-      <p class="mt-6 text-lg leading-8 text-text">
+      <p class="mt-6 text-lg leading-8 text-text-secondary dark:text-text-inverted/80">
         Chaque réalisation a été une opportunité d'explorer différentes technologies, de collaborer avec des équipes différentes, et de résoudre des défis techniques.
       </p>
     </div>
 
     <!-- Section Projets -->
     <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-6xl">
-      <!-- Grille principale -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <!-- Cartes de projets -->
-        <div
-          v-for="(feature) in features"
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Carte de projet améliorée -->
+        <article
+          v-for="(feature, index) in features"
           :key="feature.name"
-          class="w-full"
+          class="group relative overflow-hidden rounded-2xl bg-surface dark:bg-surface-dark shadow-xl hover:shadow-2xl transition-all duration-300"
+          data-aos="fade-up"
+          :data-aos-delay="index * 100"
         >
-          <!-- Carte principale -->
-          <div
-            class="bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 cursor-pointer"
+          <div 
+            class="cursor-pointer"
             @click="toggleFeature(feature.name)"
           >
-            <!-- Image du projet -->
-            <div class="flex justify-center items-center h-56 bg-gray-100">
+            <!-- Image avec effet de survol -->
+            <div class="relative h-56 bg-gray-100 dark:bg-gray-800 overflow-hidden">
               <img
                 :src="feature.image"
                 :alt="feature.name"
-                class="object-cover h-full"
+                class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
               />
+              <!-- Badge d'état -->
+              <span v-if="feature.url" class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-medium shadow-md">
+                En ligne
+              </span>
             </div>
-            <!-- Contenu du projet -->
-            <div class="p-6">
-              <h3 class="text-2xl font-bold text-text mb-2">
+
+            <!-- Contenu de la carte -->
+            <div class="p-6 space-y-4">
+              <h3 class="text-2xl font-bold text-text-primary dark:text-text-inverted">
                 {{ feature.name }}
               </h3>
-              <p class="text-gray-600 text-justify mb-4">
+              <p class="text-gray-600 dark:text-gray-300 text-justify line-clamp-3">
                 {{ feature.description }}
               </p>
-              <!-- Technologies utilisées -->
-              <h4 class="text-xl font-semibold text-text2 mb-2">
-                Technologies :
-              </h4>
-              <ul class="flex flex-wrap gap-4">
-                <li
+              
+              <!-- Technologies avec icônes colorées -->
+              <div class="flex flex-wrap gap-2">
+                <div
                   v-for="tech in feature.technos"
                   :key="tech.name"
-                  class="flex items-center bg-gray-100 px-3 py-1 rounded-full shadow-sm"
+                  class="flex items-center px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-sm"
+                  :style="{ backgroundColor: tech.icon.bgColor }"
                 >
                   <font-awesome-icon
-                    :icon="tech.icon"
-                    class="h-5 w-5 text-text2 mr-2"
-                    aria-hidden="true"
+                    v-if="tech.icon.type === 'font-awesome'"
+                    :icon="[tech.icon.prefix, tech.icon.name]"
+                    class="h-4 w-4 mr-2"
+                    :style="{ color: tech.icon.color }"
                   />
-                  <span class="text-text">{{ tech.name }}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Modale de projet -->
-          <div
-            v-if="isFeatureClicked(feature.name)"
-            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-            @click="toggleFeature(feature.name)"
-          >
-            <div
-              class="relative bg-white w-11/12 md:w-11/12 lg:w-11/12 xl:w-11/12 max-h-[90vh] rounded-lg shadow-lg p-6 overflow-auto"
-              @click.stop
-            >
-              <!-- Bouton de fermeture -->
-              <button
-                @click="toggleFeature(feature.name)"
-                class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-              >
-                <font-awesome-icon icon="fa fa-times" class="h-5 w-5" />
-              </button>
-
-              <!-- Contenu de la modale -->
-              <div>
-                <h3 class="text-2xl font-bold text-text mb-4">
-                  {{ feature.name }}
-                </h3>
-                <h4 class="text-sl mb-4 ">
-                  {{ feature.descriptionDetaille }}
-                </h4>
-                <h4 class="text-sl font-bold text-text mb-4">
-                  Capture d'écran du projet :
-                </h4>
-                <Carousel v-bind="config">
-                  <Slide
-                    v-for="(img, index) in feature.imageSecondaire"
-                    :key="index"
-                  >
-                    <img
-                      :src="img"
-                      :alt="feature.name"
-                      class="object-contain max-h-96 w-full rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
-                      @click="openImageModal(img)"
-                    />
-                  </Slide>
-
-                  <template #addons>
-                    <Navigation />
-                    <Pagination />
-                  </template>
-                </Carousel>
-                <h4 class="text-sl font-bold text-text mb-4">
-                  Venez découvrir le projet :
-                </h4>
-                <a :href="feature.url" target="_blank" class="text-blue-500 hover:underline">
-                  {{ feature.url }}
-                </a>
+                  <img
+                    v-else
+                    :src="tech.icon.src"
+                    class="h-4 w-4 mr-2"
+                    :alt="tech.name + ' icon'"
+                  />
+                  <span class="font-medium text-text-secondary dark:text-gray-300">
+                    {{ tech.name }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </div>
 
-  <!-- Modale d'image agrandie -->
-  <div
-    v-if="isImageModalOpen"
-    class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-    @click="closeImageModal"
-  >
-    <div class="relative">
-      <!-- Bouton de fermeture -->
-      <button
-        @click="closeImageModal"
-        class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-        >
-        <font-awesome-icon icon="fa fa-times" class="h-5 w-5" />
-      </button>
-
-      <!-- Image agrandie -->
-      <img
-        :src="currentImage"
-        alt="Image agrandie"
-        class="max-w-full max-h-screen rounded-lg shadow-lg"
-        @click.stop
-      />
-    </div>
-  </div>
-  </div>
+    <!-- Modale de projet -->
+    <ProjectModal
+      v-for="feature in features"
+      :key="'modal-' + feature.name"
+      :feature="feature"
+      :is-open="isFeatureClicked(feature.name)"
+      @close="toggleFeature(feature.name)"
+    />
+  </section>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import 'vue3-carousel/carousel.css';
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
-// Variables et fonctions
-const isImageModalOpen = ref(false);
-const currentImage = ref('');
-const featuresClick = ref([]);
+import { ref } from 'vue'
+import AOS from 'aos'
+import ProjectModal from './ProjectModal.vue'
+
+// Initialisation des animations
+AOS.init({
+  once: true,
+  duration: 800
+})
+
+const featuresClick = ref(new Set())
 const features = [
   {
-    name: 'Basile : une application web pour réduire le gaspillage alimentaire',
-    description:
-      'Basile : Contribution au développement d’une application web innovante, mettant en relation maraîchers et restaurateurs, permettant ainsi de sauver des fruits et légumes déclassés.',
-    descriptionDetaille:'Participation à un projet d’école sur deux ans, impliquant une équipe pluridisciplinaire composée d’une designer UX/UI, d’une spécialiste en marketing, de trois développeurs et d’un data analyst. Le projet visait à concevoir et développer une application web novatrice facilitant la mise en relation entre maraîchers et restaurateurs pour valoriser les fruits et légumes déclassés (hors calibre ou présentant de légères imperfections) et réduire le gaspillage alimentaire.',
+    name: 'Basile - Application anti-gaspi',
+    description: 'Application web pour réduire le gaspillage alimentaire...',
     image: require('@/assets/basile.png'),
+    descriptionDetaille: 'Développement d’une application web pour réduire le gaspillage alimentaire en permettant aux utilisateurs de vendre et d’acheter des produits alimentaires à prix',
     technos: [
-      { name: 'Vue.js', icon: ['fab', 'vuejs'] },
-      { name: 'Node.js', icon: ['fas', 'code'] },
-      { name: 'Express', icon: ['fas', 'code'] },
-      { name: 'Prisma', icon: ['fas', 'database'] },
-      { name: 'PostgreSQL', icon: ['fas', 'database'] },
-      { name: 'MailCatcher', icon: ['fas', 'envelope'] },
-      { name: 'Docker', icon: ['fab', 'docker'] },
+      { 
+        name: 'Vue.js', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'vuejs',
+          color: '#4FC08D',
+          bgColor: 'rgba(79, 192, 141, 0.1)'
+        }
+      },
+      { 
+        name: 'Node.js', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fas',
+          name: 'code',
+          color: '#68A063',
+          bgColor: 'rgba(104, 160, 99, 0.1)'
+        }
+      },
+      { 
+        name: 'Express', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fas',
+          name: 'code',
+          color: '#000000',
+          bgColor: 'rgba(0, 0, 0, 0.1)'
+        }
+      },
+      { 
+        name: 'Prisma', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fas',
+          name: 'database',
+          color: '#0C344B',
+          bgColor: 'rgba(12, 52, 75, 0.1)'
+        }
+      },
+      { 
+        name: 'PostgreSQL', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fas',
+          name: 'database',
+          color: '#336791',
+          bgColor: 'rgba(51, 103, 145, 0.1)'
+        }
+      },
+      { 
+        name: 'MailCatcher', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fas',
+          name: 'envelope',
+          color: '#FF5733',
+          bgColor: 'rgba(255, 87, 51, 0.1)'
+        }
+      },
+      { 
+        name: 'Docker', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'docker',
+          color: '#2496ED',
+          bgColor: 'rgba(36, 150, 237, 0.1)'
+        }
+      }
     ],
+
     imageSecondaire: [
       require('@/assets/loginBasile.png'),
       require('@/assets/tableauBord.png'),
       require('@/assets/shopBasile.png'),
       require('@/assets/commandeBasile.png'),
       require('@/assets/venteProduit.png'),
-    ],
-  },
-  {
-    name: 'E-conceptstore : site e-commerce de produits de brocante',
-    description:
-      `Développement d'un site e-commerce de vente de produits de broquante avec WordPress, JavaScript et CSS personnalisé, permettant aux utilisateurs d'acheter des articles uniques et vintage.`,
-    descriptionDetaille:'Conception et réalisation d’un site e-commerce dédié à la vente d’articles de brocante uniques et vintage, réalisé en collaboration avec ma copine. Ce projet a permis de combiner nos compétences techniques et notre passion pour les objets anciens afin de créer une plateforme conviviale et esthétiquement attrayante, mettant en valeur des produits uniques pour une clientèle variée.',
-    image: require('@/assets/e-conceptstore.png'),
-    technos: [
-      { name: 'Wordpress', icon: ['fab', 'wordpress'] },
-      { name: 'PHP', icon: ['fab', 'php'] },
-      { name: 'Javascript', icon: ['fab', 'js'] },
-      { name: 'HTML5', icon: ['fab', 'html5'] },
-      { name: 'CSS3', icon: ['fab', 'css3'] },
+    ],  },
+      {
+        name: 'E-conceptstore - site e-commerce de produits de brocante',
+        description:
+          `Développement d'un site e-commerce de vente de produits de broquante...`,
+        descriptionDetaille:'Conception et réalisation d’un site e-commerce dédié à la vente d’articles de brocante uniques et vintage, réalisé en collaboration avec ma conjointe. Ce projet a permis de combiner nos compétences techniques et notre passion pour les objets anciens afin de créer une plateforme conviviale et esthétiquement attrayante, mettant en valeur des produits uniques pour une clientèle variée.',
+        image: require('@/assets/e-conceptstore.png'),
+        technos: [
+      { 
+        name: 'Wordpress', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'wordpress',
+          color: '#21759B',
+          bgColor: 'rgba(33, 117, 155, 0.1)'
+        }
+      },
+      { 
+        name: 'PHP', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'php',
+          color: '#777BB4',
+          bgColor: 'rgba(119, 123, 180, 0.1)'
+        }
+      },
+      { 
+        name: 'Javascript', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'js',
+          color: '#F7DF1E',
+          bgColor: 'rgba(247, 223, 30, 0.1)'
+        }
+      },
+      { 
+        name: 'HTML5', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'html5',
+          color: '#E34F26',
+          bgColor: 'rgba(227, 79, 38, 0.1)'
+        }
+      },
+      { 
+        name: 'CSS3', 
+        icon: { 
+          type: 'font-awesome',
+          prefix: 'fab',
+          name: 'css3',
+          color: '#1572B6',
+          bgColor: 'rgba(21, 114, 182, 0.1)'
+        }
+      }
     ],
     imageSecondaire: [
       require('@/assets/e-conceptstoreCommande.png'),
@@ -203,58 +258,39 @@ const features = [
       require('@/assets/e-conceptstoreFooter.png'),
     ],
     url: 'https://e-conceptstore.fr/',
-  },
-  // {
-  //   name: 'ERP et MES - Talkme',
-  //   description:
-  //     "Contribuez au développement d'ERP et de MES en Vue.js et Laravel, et d'une application Node.js pour la centralisation de données en MongoDB.",
-  //   image: require('@/assets/erp-mes.png'),
-  //   technos: [
-  //     { name: 'Vue.js', icon: ['fab', 'vuejs'] },
-  //     { name: 'Laravel', icon: ['fab', 'laravel'] },
-  //     { name: 'MongoDB', icon: ['fas', 'database'] },
-  //     { name: 'Docker', icon: ['fab', 'docker'] },
-  //     { name: 'Sql', icon: ['fas', 'database'] },
-  //   ],
-  //   imageSecondaire: [
-  //     require('@/assets/chart-js3.png'),
-  //   ],
-  // },
-];
+  },]
 
-// Gestion des modales
 function toggleFeature(name) {
-  if (featuresClick.value.includes(name)) {
-    featuresClick.value = featuresClick.value.filter(
-      (feature) => feature !== name
-    );
-  } else {
-    featuresClick.value.push(name);
-  }
+  featuresClick.value.has(name) 
+    ? featuresClick.value.delete(name)
+    : featuresClick.value.add(name)
 }
 
 function isFeatureClicked(name) {
-  return featuresClick.value.includes(name);
+  return featuresClick.value.has(name)
 }
-// Gestion de la modale d'image
-function openImageModal(img) {
-  currentImage.value = img;
-  isImageModalOpen.value = true;
-}
-
-function closeImageModal() {
-  isImageModalOpen.value = false;
-}
-
-const config = {
-  itemsToShow: 1,
-  transition: 500, // Durée de la transition en ms
-  mouseDrag: true, // Permet le swipe avec la souris
-  touchDrag: true, // Permet le swipe sur appareils tactiles
-  infiniteScroll: true, // Boucle infinie des slides
-};
 </script>
 
 <style scoped>
-/* Ajout des styles si nécessaire */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Animation d'entrée */
+[data-aos] {
+  opacity: 0;
+  transition-property: opacity, transform;
+}
+
+[data-aos="fade-up"] {
+  transform: translateY(30px);
+}
+
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>

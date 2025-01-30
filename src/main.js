@@ -20,6 +20,13 @@ import {
   faDownload,
   faRobot,
   faTimes,
+  faAward,
+  faPalette,
+  faBrain,
+  faMagic,
+  faServer,
+  faLightbulb,
+  faFileArrowDown
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faVuejs,
@@ -35,7 +42,9 @@ import {
   faLinkedin,
   faGithub,
   faBots,
-  faWordpress
+  faWordpress,
+  faNodeJs,
+  faDiscord
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
@@ -67,6 +76,15 @@ library.add(
   faRobot,
   faTimes,
   faWordpress,
+  faAward,
+  faNodeJs,
+  faPalette,
+  faDiscord,
+  faBrain,
+  faMagic,
+  faServer,
+  faLightbulb,
+  faFileArrowDown
 )
 
 // Créez l'application et assignez-la à une variable
